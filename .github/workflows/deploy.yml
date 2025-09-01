@@ -10,23 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🔻 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🟨 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      - name: Build
+      - name: 🛠 Build
         run: npm run build
         env:
           CI: false
 
-      - name: Deploy via SSH
+      - name: 📂 Copy files to server via SCP
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "build/*"
+          target: "/var/www/CRM-TRADER"
+          rm: true # Удаляет старые файлы
+
+      - name: 🔁 Reload Nginx
         uses: appleboy/ssh-action@v1.0.2
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -34,11 +45,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Удаляем старые файлы (если нужно)
-            rm -rf /var/www/CRM-TRADER/*
-          script_stop: true
-          # Копируем build-файлы на сервер через SCP
-          source: "build/*"
-          target: "/var/www/CRM-TRADER"
-          # Включаем SCP копирование
-          copy: true
+            echo "✅ Nginx reloaded"
+            sudo nginx -t && sudo systemctl reload nginx
