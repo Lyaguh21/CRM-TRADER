@@ -6,7 +6,7 @@ export default function Main() {
     <Box w="100%" bg="blue">
       <Text py={50} ta="center" fz={28} c="white">
         <IconHome />
-        ADD TG SDK FIX5
+        ADD TG SDK FIX7
       </Text>
     </Box>
   );
