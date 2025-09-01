@@ -2,7 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout/MainLayout";
 import Main from "../../pages/Main/Main.page";
 import Error404 from "../../pages/Errors/Error404/Error404.page";
-import About from "../../pages/About/About.page";
+import Applications from "../../pages/Applications/Applications.page";
+import BoxOffice from "../../pages/BoxOffice/BoxOffice.page";
+import Reports from "../../pages/Reports/Reports.page";
 
 const router = createBrowserRouter([
   {
@@ -14,8 +16,16 @@ const router = createBrowserRouter([
         element: <Main />,
       },
       {
-        path: "/about",
-        element: <About />,
+        path: "/applications",
+        element: <Applications />,
+      },
+      {
+        path: "/box-office",
+        element: <BoxOffice />,
+      },
+      {
+        path: "/reports",
+        element: <Reports />,
       },
     ],
   },
