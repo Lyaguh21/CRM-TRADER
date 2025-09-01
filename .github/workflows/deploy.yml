@@ -3,7 +3,7 @@ name: Deploy Vite React App
 on:
   push:
     branches:
-      - main # или master, если у тебя другая ветка
+      - main
 
 jobs:
   deploy:
@@ -30,29 +30,26 @@ jobs:
       - name: 🔍 Check dist folder exists
         run: |
           if [ -d "dist" ]; then
-            echo "✅ dist/ directory exists"
+            echo "✅ dist/ exists"
             ls -la dist/
-            du -sh dist/
           else
-            echo "❌ dist/ directory does NOT exist!"
+            echo "❌ dist/ does not exist!"
             exit 1
           fi
 
-      - name: 🔐 Setup SSH key (private)
+      - name: 🔐 Setup SSH key
         run: |
-          # Создаём папку
           mkdir -p /home/runner/.ssh
-          # Сохраняем ключ (echo -e корректно обрабатывает переносы строк)
-          echo -e "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/id_ed25519
-          # Права: только владелец может читать
+          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/id_ed25519
           chmod 600 /home/runner/.ssh/id_ed25519
-          # Диагностика: проверяем, что файл создан и содержит ключ
-          echo "🔑 SSH key file created:"
+          echo "🔐 Key file created:"
           ls -la /home/runner/.ssh/id_ed25519
+          echo "📄 First line:"
           head -n 1 /home/runner/.ssh/id_ed25519
+          echo "📄 Last line:"
           tail -n 1 /home/runner/.ssh/id_ed25519
 
-      - name: 📂 Copy files to server via SCP
+      - name: 📂 Copy files to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -75,4 +72,3 @@ jobs:
           script: |
             echo "🔄 Reloading nginx..."
             sudo nginx -t && sudo systemctl reload nginx
-            echo "✅ Deployment complete! Site is live at http://miss-click.online"
