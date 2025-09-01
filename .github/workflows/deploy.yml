@@ -37,26 +37,16 @@ jobs:
             exit 1
           fi
 
-      - name: 🔐 Setup SSH key
-        run: |
-          mkdir -p /home/runner/.ssh
-          cat << 'EOF' > /home/runner/.ssh/id_ed25519
-          ${{ secrets.SSH_PRIVATE_KEY }}
-          EOF
-          chmod 600 /home/runner/.ssh/id_ed25519
-          echo "🔐 Key file created:"
-          ls -la /home/runner/.ssh/id_ed25519
-          echo "📄 First line:"
-          head -n 1 /home/runner/.ssh/id_ed25519
-          echo "📄 Last line:"
-          tail -n 1 /home/runner/.ssh/id_ed25519
+      - name: 🔐 Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: 📂 Copy files to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key_path: /home/runner/.ssh/id_ed25519
           port: ${{ secrets.SSH_PORT }}
           source: "dist"
           target: "/var/www/CRM-TRADER"
@@ -69,7 +59,6 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key_path: /home/runner/.ssh/id_ed25519
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "🔄 Reloading nginx..."
