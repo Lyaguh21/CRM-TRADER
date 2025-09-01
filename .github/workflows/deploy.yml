@@ -1,4 +1,4 @@
-name: Deploy React App (Vite)
+name: Deploy Vite App
 
 on:
   push:
@@ -21,34 +21,36 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🛠 Build (Vite)
+      - name: 🛠 Build
         run: npm run build
         env:
           CI: false
-          # Если нужно — увеличим память
           NODE_OPTIONS: --max_old_space_size=4096
 
-      - name: 🔍 Check if dist/ exists
+      - name: 🔍 Check dist folder
         run: |
-          if [ -d "dist" ]; then
-            echo "✅ dist/ directory exists"
-            ls -la dist/
-          else
-            echo "❌ dist/ directory does not exist!"
-            exit 1
-          fi
+          ls -la dist/
+          du -sh dist/
 
-      - name: 📂 Copy to server
+      - name: 🔐 Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ls -la ~/.ssh/
+          cat ~/.ssh/id_ed25519
+
+      - name: 📂 Deploy via SCP
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_path: ~/.ssh/id_ed25519
           port: ${{ secrets.SSH_PORT }}
-          source: "dist" # ← Важно: не build, а dist
+          source: "dist"
           target: "/var/www/CRM-TRADER"
           rm: true
-          timeout: 40s
+          timeout: 30s
           command_timeout: 10m
 
       - name: 🔁 Reload Nginx
@@ -56,8 +58,8 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_path: ~/.ssh/id_ed25519
           port: ${{ secrets.SSH_PORT }}
           script: |
-            echo "✅ Deploy completed, reloading nginx"
+            echo "✅ Nginx reload"
             sudo nginx -t && sudo systemctl reload nginx
