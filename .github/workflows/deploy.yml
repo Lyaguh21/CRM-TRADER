@@ -37,16 +37,12 @@ jobs:
             exit 1
           fi
 
-      - name: 🔐 Setup SSH
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: 📂 Copy files to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # Явно передаем ключ
           port: ${{ secrets.SSH_PORT }}
           source: "dist"
           target: "/var/www/CRM-TRADER"
@@ -59,6 +55,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # Явно передаем ключ
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "🔄 Reloading nginx..."
