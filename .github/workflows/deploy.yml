@@ -40,7 +40,9 @@ jobs:
       - name: 🔐 Setup SSH key
         run: |
           mkdir -p /home/runner/.ssh
-          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/id_ed25519
+          cat << 'EOF' > /home/runner/.ssh/id_ed25519
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          EOF
           chmod 600 /home/runner/.ssh/id_ed25519
           echo "🔐 Key file created:"
           ls -la /home/runner/.ssh/id_ed25519
