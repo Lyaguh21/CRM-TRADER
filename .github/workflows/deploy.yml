@@ -1,9 +1,9 @@
-name: Deploy Vite App
+name: Deploy Vite React App
 
 on:
   push:
     branches:
-      - main
+      - main # или master, если у тебя другая ветка
 
 jobs:
   deploy:
@@ -21,32 +21,43 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🛠 Build
+      - name: 🛠 Build (Vite)
         run: npm run build
         env:
           CI: false
           NODE_OPTIONS: --max_old_space_size=4096
 
-      - name: 🔍 Check dist folder
+      - name: 🔍 Check dist folder exists
         run: |
-          ls -la dist/
-          du -sh dist/
+          if [ -d "dist" ]; then
+            echo "✅ dist/ directory exists"
+            ls -la dist/
+            du -sh dist/
+          else
+            echo "❌ dist/ directory does NOT exist!"
+            exit 1
+          fi
 
-      - name: 🔐 Setup SSH key
+      - name: 🔐 Setup SSH key (private)
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          # Проверим, что файл создан
-          ls -la ~/.ssh/
-          cat ~/.ssh/id_ed25519
+          # Создаём папку
+          mkdir -p /home/runner/.ssh
+          # Сохраняем ключ (echo -e корректно обрабатывает переносы строк)
+          echo -e "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/id_ed25519
+          # Права: только владелец может читать
+          chmod 600 /home/runner/.ssh/id_ed25519
+          # Диагностика: проверяем, что файл создан и содержит ключ
+          echo "🔑 SSH key file created:"
+          ls -la /home/runner/.ssh/id_ed25519
+          head -n 1 /home/runner/.ssh/id_ed25519
+          tail -n 1 /home/runner/.ssh/id_ed25519
 
-      - name: 📂 Deploy via SCP
+      - name: 📂 Copy files to server via SCP
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key_path: ~/.ssh/id_ed25519
+          key_path: /home/runner/.ssh/id_ed25519
           port: ${{ secrets.SSH_PORT }}
           source: "dist"
           target: "/var/www/CRM-TRADER"
@@ -59,8 +70,9 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key_path: ~/.ssh/id_ed25519
+          key_path: /home/runner/.ssh/id_ed25519
           port: ${{ secrets.SSH_PORT }}
           script: |
-            echo "✅ Nginx reload"
+            echo "🔄 Reloading nginx..."
             sudo nginx -t && sudo systemctl reload nginx
+            echo "✅ Deployment complete! Site is live at http://miss-click.online"
