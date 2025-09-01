@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noEmitOnError": false,
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
