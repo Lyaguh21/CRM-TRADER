@@ -48,7 +48,7 @@ jobs:
           source: "dist" # ← Важно: не build, а dist
           target: "/var/www/CRM-TRADER"
           rm: true
-          timeout: 30s
+          timeout: 40s
           command_timeout: 10m
 
       - name: 🔁 Reload Nginx
