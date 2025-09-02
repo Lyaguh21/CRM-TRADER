@@ -19,6 +19,7 @@ export default function NavSection() {
     <Flex
       gap={30}
       p={15}
+      pb={30}
       bottom={0}
       pos="absolute"
       style={{ borderTop: "2px solid #9CA3AF20" }}
