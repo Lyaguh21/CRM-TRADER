@@ -10,7 +10,6 @@ export default function Main() {
   } catch {}
 
   const data = {
-    name: "Карен Джан",
     role: "Admin",
   };
 
@@ -19,6 +18,7 @@ export default function Main() {
       <Flex
         w="100%"
         p={15}
+        pt="max(env(safe-area-inset-top), var(--tg-content-safe-area-inset-top))"
         justify="space-between"
         align="center"
         style={{ borderBottom: "2px solid #9CA3AF20" }}
@@ -34,6 +34,8 @@ export default function Main() {
 
         <Avatar src={launchParams?.tgWebAppData?.user?.photo_url} />
       </Flex>
+
+      {launchParams?.tgWebAppData?.user?.id}
     </>
   );
 }
