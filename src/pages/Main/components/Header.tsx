@@ -2,8 +2,9 @@ import { Avatar, Flex, Text } from "@mantine/core";
 import { IconPoint } from "@tabler/icons-react";
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 import RoleBadge from "../../../shared/RoleBadge/RoleBadge";
+import { dataInterface } from "../../../entities/MainPageRequest";
 
-export default function Header({ data }: { data: any }) {
+export default function Header({ data }: { data: dataInterface }) {
   let launchParams = null;
   try {
     launchParams = retrieveLaunchParams();

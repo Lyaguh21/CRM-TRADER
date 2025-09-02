@@ -1,8 +1,9 @@
 import { Box, Flex, Text } from "@mantine/core";
 import { IconChevronRight, IconClock, IconWallet } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
+import { boxOffice, dataInterface } from "../../../entities/MainPageRequest";
 
-export default function FirstLine({ data }: { data: any }) {
+export default function FirstLine({ data }: { data: dataInterface }) {
   return (
     <Flex p={15} gap={15} justify={"space-between"} w="100%">
       <NavLink
@@ -71,7 +72,7 @@ export default function FirstLine({ data }: { data: any }) {
           </Flex>
           <Text my={10}>Баланс кассы</Text>
 
-          {data.boxOffice.map((el) => (
+          {data.boxOffice.map((el: boxOffice) => (
             <Flex justify={"space-between"}>
               <Text c="#737D81" fz={12}>
                 {el.name}
