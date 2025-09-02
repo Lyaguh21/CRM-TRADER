@@ -8,7 +8,7 @@ export const Roles = [
   {
     name: "Operator",
     title: "Админ",
-    bgColor: "#EBF2FE",
-    fontColor: "#579FF9",
+    bgColor: "#FEE2E2",
+    fontColor: "#991B1B",
   },
 ];
