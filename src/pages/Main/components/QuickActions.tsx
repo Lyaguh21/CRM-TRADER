@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@mantine/core";
+import { Box, em, Flex, Text } from "@mantine/core";
 import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import {
   IconCoins,
@@ -8,9 +8,11 @@ import {
 } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 import { useUserStore } from "../../../entities/stores/userStore";
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function QuickActions() {
   const { userRole } = useUserStore();
+  const mdMobile = useMediaQuery(`(max-width: ${em(375)})`);
   const data = [
     {
       link: "/",
@@ -59,8 +61,9 @@ export default function QuickActions() {
             <NavLink
               to={el.link}
               style={{
-                width: el.w ? el.w : "calc(48%)",
+                width: el.w ? el.w : "calc(50% - 15px)",
                 alignItems: "stretch",
+                borderRadius: 24,
               }}
             >
               <Box
@@ -89,12 +92,14 @@ export default function QuickActions() {
                     {el.icon}
                   </Flex>
                 </Flex>
-                <Text my={10} fw={550} fz={24} c="white">
+                <Text my={10} lh={"20px"} fw={550} fz={22} c="white">
                   {el.name}
                 </Text>
-                <Text c="#FFFFFF90" fz={16}>
-                  {el.subtitle}
-                </Text>
+                {!mdMobile && (
+                  <Text c="#FFFFFF90" fz={16}>
+                    {el.subtitle}
+                  </Text>
+                )}
               </Box>
             </NavLink>
           ))}
@@ -104,7 +109,7 @@ export default function QuickActions() {
             <NavLink
               to={el.link}
               style={{
-                width: el.w ? el.w : "calc(48%)",
+                width: el.w ? el.w : "calc(50% - 15px)",
                 alignItems: "stretch",
               }}
             >
@@ -134,12 +139,14 @@ export default function QuickActions() {
                     {el.icon}
                   </Flex>
                 </Flex>
-                <Text my={10} fw={550} fz={24} c="white">
+                <Text my={10} fw={550} fz={22} c="white">
                   {el.name}
                 </Text>
-                <Text c="#FFFFFF90" fz={16}>
-                  {el.subtitle}
-                </Text>
+                {!mdMobile && (
+                  <Text c="#FFFFFF90" fz={16}>
+                    {el.subtitle}
+                  </Text>
+                )}
               </Box>
             </NavLink>
           ))}

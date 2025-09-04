@@ -8,7 +8,7 @@ export default function FirstLine({ data }: { data: dataInterface }) {
     <Flex p={15} gap={15} justify={"space-between"} w="100%">
       <NavLink
         to="/my-applications"
-        style={{ width: "50%", alignItems: "stretch" }}
+        style={{ width: "50%", alignItems: "stretch", borderRadius: 24 }}
       >
         <Box
           p={15}
@@ -45,7 +45,10 @@ export default function FirstLine({ data }: { data: dataInterface }) {
         </Box>
       </NavLink>
 
-      <NavLink to="/box-office" style={{ width: "50%", alignItems: "stretch" }}>
+      <NavLink
+        to="/box-office"
+        style={{ width: "50%", alignItems: "stretch", borderRadius: 24 }}
+      >
         <Box
           p={15}
           bg="white"
