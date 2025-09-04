@@ -1,4 +1,4 @@
-import { Flex, Text } from "@mantine/core";
+import { Box, Flex, Text } from "@mantine/core";
 import {
   IconHome2,
   IconCoins,
@@ -19,17 +19,25 @@ export default function NavSection() {
     <Flex
       gap={30}
       p={15}
+      bg="white"
+      maw={425}
+      w="100%"
       bottom={0}
-      pos="absolute"
+      pos="fixed"
+      justify="space-between"
       style={{ borderTop: "2px solid #9CA3AF20" }}
     >
       {links.map((el, index) => (
         <NavLink to={el.link} key={index}>
           {({ isActive }) => (
-            <Text c={isActive ? "#3B82F6" : "#9CA3AF"} ta="center">
-              {el.icon}
-              {el.name}
-            </Text>
+            <>
+              <Flex c={isActive ? "#3B82F6" : "#9CA3AF"} justify="center">
+                {el.icon}
+              </Flex>
+              <Text c={isActive ? "#3B82F6" : "#9CA3AF"} ta="center">
+                {el.name}
+              </Text>
+            </>
           )}
         </NavLink>
       ))}

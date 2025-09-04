@@ -6,6 +6,7 @@ import {
 } from "@tabler/icons-react";
 
 import FirstLine from "./components/FirstLine";
+import QuickActions from "./components/QuickActions";
 
 export default function Main() {
   const data = {
@@ -27,6 +28,7 @@ export default function Main() {
     <>
       <Header data={data} />
       <FirstLine data={data} />
+      <QuickActions />
     </>
   );
 }

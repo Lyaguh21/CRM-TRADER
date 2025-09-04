@@ -27,7 +27,7 @@ export default function FirstLine({ data }: { data: dataInterface }) {
               p={5}
               justify={"center"}
               align="center"
-              bdrs={6}
+              bdrs={9}
               style={{
                 aspectRatio: "1/1",
               }}
@@ -61,7 +61,7 @@ export default function FirstLine({ data }: { data: dataInterface }) {
               p={5}
               justify={"center"}
               align="center"
-              bdrs={6}
+              bdrs={9}
               style={{
                 aspectRatio: "1/1",
               }}
