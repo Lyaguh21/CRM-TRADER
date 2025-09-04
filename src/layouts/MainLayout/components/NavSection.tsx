@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@mantine/core";
+import { Flex, Text } from "@mantine/core";
 import {
   IconHome2,
   IconCoins,
