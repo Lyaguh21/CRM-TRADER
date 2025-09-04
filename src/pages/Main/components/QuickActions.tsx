@@ -15,7 +15,7 @@ export default function QuickActions() {
   const mdMobile = useMediaQuery(`(max-width: ${em(375)})`);
   const data = [
     {
-      link: "/",
+      link: "/create-application",
       name: "Новая заявка",
       subtitle: "Создать обменную заявку",
       icon: <IconPlus size={32} />,

@@ -5,6 +5,7 @@ import Error404 from "../../pages/Errors/Error404/Error404.page";
 import Applications from "../../pages/Applications/Applications.page";
 import BoxOffice from "../../pages/BoxOffice/BoxOffice.page";
 import Reports from "../../pages/Reports/Reports.page";
+import CreateApplication from "../../pages/CreateApplication/CreateApplication";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/applications",
         element: <Applications />,
+      },
+      {
+        path: "/create-application",
+        element: <CreateApplication />,
       },
       {
         path: "/box-office",
