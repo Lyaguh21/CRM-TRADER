@@ -75,8 +75,8 @@ export default function FirstLine({ data }: { data: dataInterface }) {
           </Flex>
           <Text my={10}>Баланс кассы</Text>
 
-          {data.boxOffice.map((el: boxOffice) => (
-            <Flex justify={"space-between"}>
+          {data.boxOffice.map((el: boxOffice, index) => (
+            <Flex justify={"space-between"} key={index}>
               <Text c="#737D81" fz={12}>
                 {el.name}
               </Text>

@@ -57,8 +57,9 @@ export default function QuickActions() {
       <HeadlineText>Быстрые действия</HeadlineText>
       <Flex wrap="wrap" mt={15} gap={15}>
         {userRole !== "Admin" &&
-          data.slice(0, 4).map((el) => (
+          data.slice(0, 4).map((el, index) => (
             <NavLink
+              key={index}
               to={el.link}
               style={{
                 width: el.w ? el.w : "calc(50% - 15px)",
@@ -105,8 +106,9 @@ export default function QuickActions() {
           ))}
 
         {userRole === "Admin" &&
-          data.map((el) => (
+          data.map((el, index) => (
             <NavLink
+              key={index}
               to={el.link}
               style={{
                 width: el.w ? el.w : "calc(50% - 15px)",

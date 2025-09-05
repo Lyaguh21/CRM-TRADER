@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Container,
   Title,
@@ -31,13 +31,12 @@ const CreateExchangeRequest = () => {
 
   const form = useForm({
     initialValues: {
-      currencyFrom: "",
-      currencyTo: "",
-      amount: 0,
-      commission: 3.2,
-      rate: 10.3,
-      total: 0,
-      location: "",
+      currencyFrom: "", //из чего
+      currencyTo: "", // во что
+      amount: 0, //сумма обмена
+      rate: 10, //курс
+      total: 0, //итоговая сумма
+      location: "", //локация
       locationType: "point",
       comment: "",
       contact: "",
@@ -52,30 +51,43 @@ const CreateExchangeRequest = () => {
 
   // Функция для расчета итоговой суммы
   const calculateTotal = () => {
-    const { amount, commission, rate } = form.values;
-    const calculatedTotal = amount * rate * (1 - commission / 100);
-    form.setFieldValue("total", parseFloat(calculatedTotal.toFixed(2)));
+    const { amount, rate } = form.values;
+
+    // Преобразуем в числа и проверяем на валидность
+    const numAmount = Number(amount) || 0;
+    const numRate = Number(rate) || 0;
+
+    if (numRate === 0 || numAmount === 0) {
+      form.setFieldValue("total", 0);
+      return;
+    }
+
+    if (exchangeType === "cryptoToCash") {
+      const calculatedTotal = numAmount * numRate;
+      form.setFieldValue("total", calculatedTotal);
+    } else {
+      const calculatedTotal = numAmount / numRate;
+      form.setFieldValue("total", calculatedTotal);
+    }
   };
+
+  useEffect(() => {
+    calculateTotal();
+  }, [form.values.amount, form.values.rate, exchangeType]);
 
   // Обработчик изменения суммы
   const handleAmountChange = (value) => {
     form.setFieldValue("amount", value);
-    if (autoCommission) {
-      form.setFieldValue("commission", value > 1000 ? 3.2 : 2.5);
-    }
-    calculateTotal();
   };
 
   // Обработчик изменения комиссии
   const handleCommissionChange = (value) => {
     form.setFieldValue("commission", value);
-    calculateTotal();
   };
 
   // Обработчик изменения курса
   const handleRateChange = (value) => {
     form.setFieldValue("rate", value);
-    calculateTotal();
   };
 
   // Обработчик изменения типа обмена
@@ -134,24 +146,16 @@ const CreateExchangeRequest = () => {
                 ]}
                 style={{ marginBottom: "20px" }}
               />
+
               <Select
+                key={`from-${exchangeType}`}
                 mb={15}
                 size="lg"
                 w="100%"
-                label={
-                  exchangeType === "cryptoToCash" ? "Отдаете" : "Получаете"
-                }
+                label="Отдаете"
                 placeholder="Выберите валюту"
-                value={
-                  exchangeType === "cryptoToCash"
-                    ? form.values.currencyFrom
-                    : form.values.currencyTo
-                }
-                onChange={(value) =>
-                  exchangeType === "cryptoToCash"
-                    ? form.setFieldValue("currencyFrom", value)
-                    : form.setFieldValue("currencyTo", value)
-                }
+                value={form.values.currencyFrom}
+                onChange={(value) => form.setFieldValue("currencyFrom", value)}
                 data={
                   exchangeType === "cryptoToCash"
                     ? cryptoCurrencies
@@ -160,22 +164,13 @@ const CreateExchangeRequest = () => {
               />
 
               <Select
+                key={`to-${exchangeType}`}
                 size="lg"
                 w="100%"
-                label={
-                  exchangeType === "cryptoToCash" ? "Получаете" : "Отдаете"
-                }
+                label="Получаете"
                 placeholder="Выберите валюту"
-                value={
-                  exchangeType === "cryptoToCash"
-                    ? form.values.currencyTo
-                    : form.values.currencyFrom
-                }
-                onChange={(value) =>
-                  exchangeType === "cryptoToCash"
-                    ? form.setFieldValue("currencyTo", value)
-                    : form.setFieldValue("currencyFrom", value)
-                }
+                value={form.values.currencyTo}
+                onChange={(value) => form.setFieldValue("currencyTo", value)}
                 data={
                   exchangeType === "cryptoToCash"
                     ? cashCurrencies
@@ -194,7 +189,11 @@ const CreateExchangeRequest = () => {
           <Card withBorder>
             <Grid>
               <NumberInput
-                label="Сумма обмена"
+                label={`Сумма обмена (${
+                  exchangeType === "cryptoToCash"
+                    ? form.values.currencyTo
+                    : form.values.currencyFrom
+                })`}
                 value={form.values.amount}
                 onChange={handleAmountChange}
                 min={0}
@@ -208,7 +207,11 @@ const CreateExchangeRequest = () => {
 
             <Grid mt={10}>
               <NumberInput
-                label="Курс обмена"
+                label={`Курс обмена (${
+                  exchangeType === "cryptoToCash"
+                    ? form.values.currencyFrom
+                    : form.values.currencyTo
+                })`}
                 value={form.values.rate}
                 onChange={handleRateChange}
                 w="100%"
@@ -228,11 +231,19 @@ const CreateExchangeRequest = () => {
               }}
             >
               <Text size="lg" fw={500}>
-                Итоговая сумма: {form.values.total.toFixed(2)}
+                Итоговая сумма: {form.values.total}{" "}
+                {exchangeType === "cryptoToCash"
+                  ? form.values.currencyFrom
+                  : form.values.currencyTo}
               </Text>
               <Text size="sm" color="dimmed">
-                {form.values.amount} × {form.values.rate} × (1 -{" "}
-                {form.values.commission}%)
+                {exchangeType === "cashToCrypto"
+                  ? `${form.values.amount} / ${
+                      form.values.rate
+                    } = ${form.values.total.toFixed(2)}`
+                  : `${form.values.amount} * ${
+                      form.values.rate
+                    } = ${form.values.total.toFixed(2)}`}
               </Text>
             </Box>
           </Card>
