@@ -63,10 +63,10 @@ const CreateExchangeRequest = () => {
     }
 
     if (exchangeType === "cryptoToCash") {
-      const calculatedTotal = numAmount * numRate;
+      const calculatedTotal = numAmount / numRate;
       form.setFieldValue("total", calculatedTotal);
     } else {
-      const calculatedTotal = numAmount / numRate;
+      const calculatedTotal = numAmount * numRate;
       form.setFieldValue("total", calculatedTotal);
     }
   };
@@ -152,7 +152,7 @@ const CreateExchangeRequest = () => {
                 mb={15}
                 size="lg"
                 w="100%"
-                label="Отдаете"
+                label="Из"
                 placeholder="Выберите валюту"
                 value={form.values.currencyFrom}
                 onChange={(value) => form.setFieldValue("currencyFrom", value)}
@@ -167,7 +167,7 @@ const CreateExchangeRequest = () => {
                 key={`to-${exchangeType}`}
                 size="lg"
                 w="100%"
-                label="Получаете"
+                label="В"
                 placeholder="Выберите валюту"
                 value={form.values.currencyTo}
                 onChange={(value) => form.setFieldValue("currencyTo", value)}
@@ -233,15 +233,15 @@ const CreateExchangeRequest = () => {
               <Text size="lg" fw={500}>
                 Итоговая сумма: {form.values.total}{" "}
                 {exchangeType === "cryptoToCash"
-                  ? form.values.currencyFrom
-                  : form.values.currencyTo}
+                  ? form.values.currencyTo
+                  : form.values.currencyFrom}
               </Text>
               <Text size="sm" color="dimmed">
                 {exchangeType === "cashToCrypto"
-                  ? `${form.values.amount} / ${
+                  ? `${form.values.amount} * ${
                       form.values.rate
                     } = ${form.values.total.toFixed(2)}`
-                  : `${form.values.amount} * ${
+                  : `${form.values.amount} / ${
                       form.values.rate
                     } = ${form.values.total.toFixed(2)}`}
               </Text>

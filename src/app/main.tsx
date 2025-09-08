@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import { init, miniApp, viewport } from "@telegram-apps/sdk-react";
+import Auth from "./providers/Auth.tsx";
 
 const initializeTelegramSDK = async () => {
   try {
@@ -29,6 +30,8 @@ initializeTelegramSDK();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <Auth>
+      <App />
+    </Auth>
   </React.StrictMode>
 );

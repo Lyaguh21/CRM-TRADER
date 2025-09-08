@@ -17,8 +17,8 @@ export default function Header() {
       </Link>
 
       <Box>
-        <HeadlineText>Новая заявка</HeadlineText>
-        <Text>Создание обменной операции</Text>
+        <HeadlineText>Все заявки</HeadlineText>
+        <Text>Управление обменными заявками</Text>
       </Box>
     </Flex>
   );
