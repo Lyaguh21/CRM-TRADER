@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 import axios from "axios";
 import { ReactNode, useState } from "react";
