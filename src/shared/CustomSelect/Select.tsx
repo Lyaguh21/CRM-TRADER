@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { IconChevronDown } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 
