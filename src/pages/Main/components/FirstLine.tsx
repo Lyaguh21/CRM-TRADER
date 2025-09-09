@@ -1,13 +1,14 @@
 import { Box, Flex, Text } from "@mantine/core";
 import { IconChevronRight, IconClock, IconWallet } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
-import { boxOffice, dataInterface } from "../../../entities/MainPageRequest";
+import { dataInterface } from "../../../entities/MainPageRequest";
+import { IconCurrencyDollar, IconCurrencyRubel } from "@tabler/icons-react";
 
 export default function FirstLine({ data }: { data: dataInterface }) {
   return (
     <Flex p={15} gap={15} justify={"space-between"} w="100%">
       <NavLink
-        to="/my-applications"
+        to="/applications"
         style={{ width: "50%", alignItems: "stretch", borderRadius: 24 }}
       >
         <Box
@@ -75,19 +76,44 @@ export default function FirstLine({ data }: { data: dataInterface }) {
           </Flex>
           <Text my={10}>Баланс кассы</Text>
 
-          {data.boxOffice.map((el: boxOffice, index) => (
-            <Flex justify={"space-between"} key={index}>
-              <Text c="#737D81" fz={12}>
-                {el.name}
+          <Flex justify={"space-between"}>
+            <Text c="#737D81" fz={12}>
+              RUB
+            </Text>
+            <Flex gap={2} align="center">
+              <Text fw={600} fz={12}>
+                {data.boxOffice.rub}
               </Text>
-              <Flex gap={2} align="center">
-                <Text fw={600} fz={12}>
-                  {el.count}
-                </Text>
-                {el.icon}
-              </Flex>
+              <IconCurrencyRubel size={14} />
             </Flex>
-          ))}
+          </Flex>
+
+          <Flex justify={"space-between"}>
+            <Text c="#737D81" fz={12}>
+              USD
+            </Text>
+            <Flex gap={2} align="center">
+              <Text fw={600} fz={12}>
+                {data.boxOffice.usd}
+              </Text>
+              <IconCurrencyDollar size={14} />
+            </Flex>
+          </Flex>
+
+          <Flex justify={"space-between"}>
+            <Text c="#737D81" fz={12}>
+              USDT
+            </Text>
+            <Flex gap={3} align="center">
+              <Text fw={600} fz={12}>
+                {data.boxOffice.usdt}
+              </Text>
+              <img
+                src="/icons/Usdt.svg"
+                style={{ height: "14px", width: "14px" }}
+              />
+            </Flex>
+          </Flex>
         </Box>
       </NavLink>
     </Flex>

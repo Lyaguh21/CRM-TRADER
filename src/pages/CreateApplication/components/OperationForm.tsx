@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import {
   Container,
   Title,
   Stepper,
   Group,
-  Button,
   Select,
+  Button,
   TextInput,
   NumberInput,
   Textarea,
@@ -17,15 +17,30 @@ import {
   Box,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { CustomSelect } from "../../../shared/CustomSelect/Select";
+import {
+  locationTypes,
+  contactTypes,
+  locations,
+  cryptoCurrencies,
+  cashCurrencies,
+} from "../../../entities/OperationFormInfo";
 import {
   IconClipboard,
   IconCopyCheck,
   IconMoneybag,
+  IconChevronDown,
 } from "@tabler/icons-react";
+import axios from "axios";
+import { API } from "../../../app/helpers";
+import { useUserStore } from "../../../entities/stores/userStore";
 
 const CreateExchangeRequest = () => {
+  const { userID } = useUserStore();
   const [active, setActive] = useState(0);
-  const [exchangeType, setExchangeType] = useState("cryptoToCash");
+  const [exchangeType, setExchangeType] = useState<
+    "CryptoToCurrency" | "CryptoToCurrency"
+  >("CryptoToCurrency");
   const [autoCommission, setAutoCommission] = useState(true);
   const [adminMode, setAdminMode] = useState(false);
 
@@ -39,8 +54,6 @@ const CreateExchangeRequest = () => {
       location: "", //локация
       locationType: "point",
       comment: "",
-      contact: "",
-      contactType: "telegram",
     },
   });
 
@@ -62,13 +75,8 @@ const CreateExchangeRequest = () => {
       return;
     }
 
-    if (exchangeType === "cryptoToCash") {
-      const calculatedTotal = numAmount / numRate;
-      form.setFieldValue("total", calculatedTotal);
-    } else {
-      const calculatedTotal = numAmount * numRate;
-      form.setFieldValue("total", calculatedTotal);
-    }
+    const calculatedTotal = numAmount * numRate;
+    form.setFieldValue("total", calculatedTotal);
   };
 
   useEffect(() => {
@@ -78,11 +86,6 @@ const CreateExchangeRequest = () => {
   // Обработчик изменения суммы
   const handleAmountChange = (value) => {
     form.setFieldValue("amount", value);
-  };
-
-  // Обработчик изменения комиссии
-  const handleCommissionChange = (value) => {
-    form.setFieldValue("commission", value);
   };
 
   // Обработчик изменения курса
@@ -97,26 +100,25 @@ const CreateExchangeRequest = () => {
     form.setFieldValue("currencyTo", "");
   };
 
-  // Данные для выбора валют
-  const cashCurrencies = [
-    { value: "USD", label: "USD" },
-    { value: "EUR", label: "EUR" },
-    { value: "RUB", label: "RUB" },
-  ];
-
-  const cryptoCurrencies = [
-    { value: "USDT_TRC20", label: "USDT (TRC20)" },
-    { value: "USDT_ERC20", label: "USDT (ERC20)" },
-    { value: "BTC", label: "BTC - Bitcoin" },
-    { value: "ETH", label: "ETH - Ethereum" },
-  ];
-
-  // Точки сделок
-  const locations = [
-    { value: "office_1", label: "Центральный офис" },
-    { value: "office_2", label: "Филиал на Ленина" },
-    { value: "office_3", label: 'Торговый центр "Центральный"' },
-  ];
+  const handleSubmit = () => {
+    axios
+      .post(`${API}/trades?tgId=${userID}`, {
+        TradeType: exchangeType,
+        Currency:
+          exchangeType === "CryptoToCurrency"
+            ? form.values.currencyTo
+            : form.values.currencyFrom,
+        Crypto:
+          exchangeType === "CryptoToCurrency"
+            ? form.values.currencyFrom
+            : form.values.currencyTo,
+        Count: form.values.amount,
+        Rate: form.values.rate,
+        Place: form.values.location,
+        Comments: form.values.comment,
+      })
+      .catch((err) => console.error(err));
+  };
 
   return (
     <Container size="md" style={{ padding: "20px 0" }}>
@@ -131,52 +133,84 @@ const CreateExchangeRequest = () => {
           label="Тип операции"
           description="Выбор направления обмена"
         >
-          <Card withBorder>
+          <Card withBorder style={{ overflow: "visible" }}>
             <Grid>
-              <Select
-                label="Тип обмена"
-                placeholder="Выберите тип операции"
-                size="lg"
-                w="100%"
-                value={exchangeType}
-                onChange={handleExchangeTypeChange}
-                data={[
-                  { value: "cryptoToCash", label: "Крипта → Нал" },
-                  { value: "cashToCrypto", label: "Нал → Крипта" },
-                ]}
-                style={{ marginBottom: "20px" }}
-              />
+              <Grid.Col span={12}>
+                <CustomSelect
+                  label="Тип обмена"
+                  placeholder="Выберите тип операции"
+                  size="lg"
+                  value={exchangeType}
+                  onChange={handleExchangeTypeChange}
+                  data={[
+                    { value: "CryptoToCurrency", label: "Крипта → Нал" },
+                    { value: "CurrencyToCrypto", label: "Нал → Крипта" },
+                  ]}
+                />
+              </Grid.Col>
 
-              <Select
-                key={`from-${exchangeType}`}
-                mb={15}
-                size="lg"
-                w="100%"
-                label="Из"
-                placeholder="Выберите валюту"
-                value={form.values.currencyFrom}
-                onChange={(value) => form.setFieldValue("currencyFrom", value)}
-                data={
-                  exchangeType === "cryptoToCash"
-                    ? cryptoCurrencies
-                    : cashCurrencies
-                }
-              />
+              {/* Крипта -> Нал */}
+              {exchangeType === "CryptoToCurrency" && (
+                <>
+                  <Grid.Col
+                    span={12}
+                    style={{ position: "relative", zIndex: 1 }}
+                  >
+                    <CustomSelect
+                      label="Покупатель отдает"
+                      placeholder="Выберите криптовалюту"
+                      size="lg"
+                      value={form.values.currencyFrom}
+                      onChange={(value) =>
+                        form.setFieldValue("currencyFrom", value)
+                      }
+                      data={cryptoCurrencies}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={12}>
+                    <CustomSelect
+                      label="Покупатель получает"
+                      placeholder="Выберите валюту"
+                      size="lg"
+                      value={form.values.currencyTo}
+                      onChange={(value) =>
+                        form.setFieldValue("currencyTo", value)
+                      }
+                      data={cashCurrencies}
+                    />
+                  </Grid.Col>
+                </>
+              )}
 
-              <Select
-                key={`to-${exchangeType}`}
-                size="lg"
-                w="100%"
-                label="В"
-                placeholder="Выберите валюту"
-                value={form.values.currencyTo}
-                onChange={(value) => form.setFieldValue("currencyTo", value)}
-                data={
-                  exchangeType === "cryptoToCash"
-                    ? cashCurrencies
-                    : cryptoCurrencies
-                }
-              />
+              {/* Нал -> Крипта */}
+              {exchangeType === "CurrencyToCrypto" && (
+                <>
+                  <Grid.Col span={12}>
+                    <CustomSelect
+                      label="Покупатель отдает"
+                      placeholder="Выберите валюту"
+                      size="lg"
+                      value={form.values.currencyFrom}
+                      onChange={(value) =>
+                        form.setFieldValue("currencyFrom", value)
+                      }
+                      data={cashCurrencies}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={12}>
+                    <CustomSelect
+                      label="Покупатель получает"
+                      placeholder="Выберите криптовалюту"
+                      size="lg"
+                      value={form.values.currencyTo}
+                      onChange={(value) =>
+                        form.setFieldValue("currencyTo", value)
+                      }
+                      data={cryptoCurrencies}
+                    />
+                  </Grid.Col>
+                </>
+              )}
             </Grid>
           </Card>
         </Stepper.Step>
@@ -189,11 +223,7 @@ const CreateExchangeRequest = () => {
           <Card withBorder>
             <Grid>
               <NumberInput
-                label={`Сумма обмена (${
-                  exchangeType === "cryptoToCash"
-                    ? form.values.currencyTo
-                    : form.values.currencyFrom
-                })`}
+                label={`Сумма обмена (${form.values.currencyTo})`}
                 value={form.values.amount}
                 onChange={handleAmountChange}
                 min={0}
@@ -208,7 +238,7 @@ const CreateExchangeRequest = () => {
             <Grid mt={10}>
               <NumberInput
                 label={`Курс обмена (${
-                  exchangeType === "cryptoToCash"
+                  exchangeType === "CryptoToCurrency"
                     ? form.values.currencyFrom
                     : form.values.currencyTo
                 })`}
@@ -231,19 +261,12 @@ const CreateExchangeRequest = () => {
               }}
             >
               <Text size="lg" fw={500}>
-                Итоговая сумма: {form.values.total}{" "}
-                {exchangeType === "cryptoToCash"
-                  ? form.values.currencyTo
-                  : form.values.currencyFrom}
+                Итоговая сумма: {form.values.total} {form.values.currencyFrom}
               </Text>
               <Text size="sm" color="dimmed">
-                {exchangeType === "cashToCrypto"
-                  ? `${form.values.amount} * ${
-                      form.values.rate
-                    } = ${form.values.total.toFixed(2)}`
-                  : `${form.values.amount} / ${
-                      form.values.rate
-                    } = ${form.values.total.toFixed(2)}`}
+                {`${form.values.amount} * ${
+                  form.values.rate
+                } = ${form.values.total.toFixed(2)}`}
               </Text>
             </Box>
           </Card>
@@ -291,31 +314,6 @@ const CreateExchangeRequest = () => {
               />
             )}
 
-            <Select
-              label="Контакт клиента"
-              size="lg"
-              placeholder="Способ связи"
-              value={form.values.contactType}
-              onChange={(value) => form.setFieldValue("contactType", value)}
-              data={[
-                { value: "telegram", label: "Telegram" },
-                { value: "phone", label: "Телефон" },
-                { value: "email", label: "Email" },
-              ]}
-              style={{ marginBottom: "15px" }}
-            />
-
-            <TextInput
-              label="Контактные данные"
-              size="lg"
-              placeholder="Введите контакт"
-              value={form.values.contact}
-              onChange={(event) =>
-                form.setFieldValue("contact", event.currentTarget.value)
-              }
-              style={{ marginBottom: "15px" }}
-            />
-
             <Textarea
               label="Комментарий (необязательно)"
               size="lg"
@@ -338,7 +336,7 @@ const CreateExchangeRequest = () => {
             <Box style={{ marginBottom: "15px" }}>
               <Text>
                 <strong>Тип операции:</strong>{" "}
-                {exchangeType === "cryptoToCash"
+                {exchangeType === "CryptoToCurrency"
                   ? "Крипта → Нал"
                   : "Нал → Крипта"}
               </Text>
@@ -351,22 +349,14 @@ const CreateExchangeRequest = () => {
               <Text>
                 <strong>Сумма:</strong> {form.values.amount}
               </Text>
-              <Text>
-                <strong>Комиссия:</strong> {form.values.commission}%
-              </Text>
+
               <Text>
                 <strong>Курс:</strong> {form.values.rate}
               </Text>
               <Text>
                 <strong>Итоговая сумма:</strong> {form.values.total}
               </Text>
-              <Text>
-                <strong>Место сделки:</strong> {form.values.location}
-              </Text>
-              <Text>
-                <strong>Контакт:</strong> {form.values.contact} (
-                {form.values.contactType})
-              </Text>
+
               {form.values.comment && (
                 <Text style={{ textWrap: "wrap" }}>
                   <strong>Комментарий:</strong> {form.values.comment}
@@ -401,7 +391,9 @@ const CreateExchangeRequest = () => {
             Далее
           </Button>
         ) : (
-          <Button size="lg">Создать заявку</Button>
+          <Button size="lg" onClick={handleSubmit}>
+            Создать заявку
+          </Button>
         )}
       </Group>
     </Container>

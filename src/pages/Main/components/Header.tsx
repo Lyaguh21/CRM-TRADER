@@ -2,9 +2,10 @@ import { Avatar, Flex, Text } from "@mantine/core";
 import { IconPoint } from "@tabler/icons-react";
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 import RoleBadge from "../../../shared/RoleBadge/RoleBadge";
-import { dataInterface } from "../../../entities/MainPageRequest";
+import { useUserStore } from "../../../entities/stores/userStore";
 
-export default function Header({ data }: { data: dataInterface }) {
+export default function Header() {
+  const { userRole } = useUserStore();
   let launchParams = null;
   try {
     launchParams = retrieveLaunchParams();
@@ -27,7 +28,7 @@ export default function Header({ data }: { data: dataInterface }) {
           )}
         </Text>
         <IconPoint color="#737D81" fill="#737D81" size={12} />
-        <RoleBadge role={data.role} />
+        <RoleBadge role={userRole} />
       </Flex>
 
       <Avatar src={launchParams?.tgWebAppData?.user?.photo_url} />

@@ -1,13 +1,10 @@
-import { ReactNode } from "react";
-
 export type boxOffice = {
-  name: string;
-  count: number;
-  icon: ReactNode;
+  rub: number;
+  usd: number;
+  usdt: number;
 };
 
 export type dataInterface = {
-  role: string;
   countActiveApplications: number;
-  boxOffice: boxOffice[];
+  boxOffice: boxOffice;
 };

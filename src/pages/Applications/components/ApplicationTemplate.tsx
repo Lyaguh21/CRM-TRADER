@@ -8,7 +8,16 @@ import {
   Text,
 } from "@mantine/core";
 import { Status } from "../../../entities/Status";
-import { IconArrowRight, IconEye } from "@tabler/icons-react";
+import {
+  IconArrowDown,
+  IconArrowRight,
+  IconCancel,
+  IconCheck,
+  IconEye,
+} from "@tabler/icons-react";
+import axios from "axios";
+import { API } from "../../../app/helpers";
+import { useState } from "react";
 
 type data = {
   id: number;
@@ -24,72 +33,139 @@ type data = {
   createdAt: any;
 };
 
-export default function ApplicationsTemplate({ data }: { data: data }) {
+export default function ApplicationsTemplate({ el }: { el: data }) {
+  const [data, setData] = useState(el);
+  function formatDate(dateString: string) {
+    const date = new Date(dateString);
+
+    return [
+      String(date.getDate()).padStart(2, "0"),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      date.getFullYear(),
+    ].join("/");
+  }
+
+  const handlePassApplication = () => {
+    axios
+      .patch(`${API}/trades/${data.id}`, { status: "Complete" })
+      .then((el) => setData(el.data));
+  };
+
+  const handleDiscardApplication = () => {
+    axios
+      .patch(`${API}/trades/${data.id}`, { status: "Canselled" })
+      .then((el) => setData(el.data));
+  };
+
   return (
-    <Box
+    <Paper
+      shadow="sm"
       bg="white"
       bdrs={24}
       p={15}
-      style={{ borderBottom: "2px solid #9CA3AF20" }}
+      style={{ borderBottom: "1px solid #9CA3AF20" }}
     >
-      <Flex justify="space-between" align="center">
+      <Flex justify="space-between" align="center" mb={10}>
         <Box>
-          <Text>{data.id}</Text>
-          <Text>{data.createdAt}</Text>
+          <Text>{formatDate(data.createdAt)}</Text>
         </Box>
         <Badge
           size="md"
           c={Status.find((el) => el.name === data.status)?.text}
           bg={Status.find((el) => el.name === data.status)?.bg}
         >
-          {data.status}
+          {Status.find((el) => data.status === el.name)?.title}
         </Badge>
       </Flex>
 
       <Flex justify="space-between" align="center">
-        <Flex gap={10} fz={32} align="center" fw="bold">
+        <Flex direction="column" align="center">
           {data.typeToTrade === "CryptoToCurrency" && (
             <>
-              <Text>
+              <Text fz={22} fw={600}>
                 {data.count}
                 {data.crypto}
               </Text>
-              <IconArrowRight color="#9CA3AF" />
-              <Text>{data.currency}</Text>
+              <IconArrowDown color="#9CA3AF" />
+              <Text fz={22} fw={600}>
+                {data.total} {data.currency}
+              </Text>
             </>
           )}
 
           {data.typeToTrade === "CurrencyToCrypto" && (
             <>
-              <Text>
+              <Text fz={22} fw={600}>
                 {data.total} {data.currency}
               </Text>
-              <IconArrowRight color="#9CA3AF" />
-              <Text>{data.crypto}</Text>
+              <IconArrowDown color="#9CA3AF" />
+              <Text fz={22} fw={600}>
+                {data.count} {data.crypto}
+              </Text>
             </>
           )}
         </Flex>
 
-        <Box>
-          <Text fz={14}>{data.typeToTrade}</Text>
-          <Text fz={14}>Курс: {data.rate}</Text>
-          <Text fz={14}>Место {data.place}</Text>
-        </Box>
+        <Flex direction="column" h="100%" align="stretch">
+          <Text fz={18} fw={600}>
+            {data.typeToTrade === "CurrencyToCrypto" ? (
+              <Flex align="center">
+                Нал
+                <IconArrowRight />
+                Крипта
+              </Flex>
+            ) : (
+              <Flex align="center">
+                Крипта
+                <IconArrowRight />
+                Нал
+              </Flex>
+            )}
+          </Text>
+          <Text fz={18} fw={600}>
+            Курс: {data.rate}
+          </Text>
+          <Text fz={18} fw={600}>
+            Место: {data.place}
+          </Text>
+        </Flex>
       </Flex>
 
       {data?.comments && (
-        <Paper radius={9}>
-          <Text>Комментарий:</Text>
+        <Paper radius={9} my={10} bg="#EFF6FF" p={15} c="#6392EB" shadow="none">
+          <Text fw={600}>Комментарий:</Text>
           <Text>{data?.comments}</Text>
         </Paper>
       )}
-      <Flex align={"center"} justify="space-between">
-        <Button>Завершить</Button>
-        <Button>Отменить</Button>
-        <ActionIcon>
+      <Flex
+        align={"center"}
+        gap={5}
+        justify={data.status === "InProcess" ? "space-between" : "end"}
+      >
+        {data.status === "InProcess" && (
+          <>
+            <Button bg="green" bdrs={9} style={{ flexGrow: "1" }}>
+              <Flex align="center" gap={5} onClick={handlePassApplication}>
+                <IconCheck /> Завершить
+              </Flex>
+            </Button>
+            <Button
+              bg="red"
+              bdrs={9}
+              style={{ flexGrow: "1" }}
+              onClick={handleDiscardApplication}
+            >
+              <Flex align="center" gap={5}>
+                <IconCancel /> Отменить
+              </Flex>
+            </Button>
+          </>
+        )}
+
+        <ActionIcon bdrs={9} size={36}>
           <IconEye />
         </ActionIcon>
       </Flex>
-    </Box>
+    </Paper>
   );
 }
