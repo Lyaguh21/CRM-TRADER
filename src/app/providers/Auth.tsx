@@ -13,9 +13,11 @@ export default function Auth({ children }: { children: ReactNode }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
+  let launchParams;
   useEffect(() => {
     try {
-      const launchParams = retrieveLaunchParams();
+      launchParams = retrieveLaunchParams();
+
       const tgUserId = launchParams?.tgWebAppData?.user?.id;
       if (tgUserId) {
         setUserID(tgUserId.toString());
@@ -28,8 +30,8 @@ export default function Auth({ children }: { children: ReactNode }) {
   useEffect(() => {
     setLoading(true);
     axios
-      // .get(`${API}/auth?tgId=${userID}`)
-      .get(`${API}/auth?tgId=796343476`)
+      .get(`${API}/auth?tgId=${userID}`)
+      // .get(`${API}/auth?tgId=796343476`)
       .then((res) => {
         setData(res.data);
         setUserID(data?.tgid);
@@ -54,7 +56,11 @@ export default function Auth({ children }: { children: ReactNode }) {
 
   // Проверяем наличие ошибки авторизации
   if (error?.error === "Unauthorized" || data?.error === "Unauthorized") {
-    return <UserUnauthorized />;
+    return (
+      <UserUnauthorized
+        name={`${launchParams.tgWebAppData?.user?.first_name} ${launchParams.tgWebAppData?.user?.last_name}`}
+      />
+    );
   }
 
   // Если данных нет, но и ошибки нет, возможно еще загружается

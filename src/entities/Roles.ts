@@ -7,7 +7,13 @@ export const Roles = [
   },
   {
     name: "Operator",
-    title: "Админ",
+    title: "Оператор",
+    bgColor: "#FEE2E2",
+    fontColor: "#991B1B",
+  },
+  {
+    name: "NeedVerified",
+    title: "Закрыть доступ",
     bgColor: "#FEE2E2",
     fontColor: "#991B1B",
   },

@@ -34,6 +34,8 @@ import {
 import axios from "axios";
 import { API } from "../../../app/helpers";
 import { useUserStore } from "../../../entities/stores/userStore";
+import { notifications } from "@mantine/notifications";
+import { NavLink } from "react-router-dom";
 
 const CreateExchangeRequest = () => {
   const { userID } = useUserStore();
@@ -43,6 +45,7 @@ const CreateExchangeRequest = () => {
   >("CryptoToCurrency");
   const [autoCommission, setAutoCommission] = useState(true);
   const [adminMode, setAdminMode] = useState(false);
+  const [passed, setPassed] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -117,7 +120,26 @@ const CreateExchangeRequest = () => {
         Place: form.values.location,
         Comments: form.values.comment,
       })
-      .catch((err) => console.error(err));
+      .then(
+        () =>
+          notifications.show({
+            title: "Успешно",
+            message: "Заявка успешно создана",
+            position: "bottom-center",
+            color: "green",
+            autoClose: 1000,
+          }),
+        setPassed(true)
+      )
+      .catch((err) =>
+        notifications.show({
+          title: "Ошибка",
+          message: "Что-то пошло не так",
+          position: "bottom-center",
+          color: "red",
+          autoClose: 1000,
+        })
+      );
   };
 
   return (
@@ -223,7 +245,11 @@ const CreateExchangeRequest = () => {
           <Card withBorder>
             <Grid>
               <NumberInput
-                label={`Сумма обмена (${form.values.currencyTo})`}
+                label={`Количество ( ${
+                  exchangeType === "CryptoToCurrency"
+                    ? form.values.currencyFrom
+                    : form.values.currencyTo
+                })`}
                 value={form.values.amount}
                 onChange={handleAmountChange}
                 min={0}
@@ -261,7 +287,10 @@ const CreateExchangeRequest = () => {
               }}
             >
               <Text size="lg" fw={500}>
-                Итоговая сумма: {form.values.total} {form.values.currencyFrom}
+                Итоговая сумма: {form.values.total}{" "}
+                {exchangeType === "CryptoToCurrency"
+                  ? form.values.currencyTo
+                  : form.values.currencyFrom}
               </Text>
               <Text size="sm" color="dimmed">
                 {`${form.values.amount} * ${
@@ -347,14 +376,20 @@ const CreateExchangeRequest = () => {
                 <strong>Получаете:</strong> {form.values.currencyTo}
               </Text>
               <Text>
-                <strong>Сумма:</strong> {form.values.amount}
+                <strong>Количество:</strong> {form.values.amount}{" "}
+                {exchangeType === "CryptoToCurrency"
+                  ? form.values.currencyFrom
+                  : form.values.currencyTo}
               </Text>
 
               <Text>
                 <strong>Курс:</strong> {form.values.rate}
               </Text>
               <Text>
-                <strong>Итоговая сумма:</strong> {form.values.total}
+                <strong>Итоговая сумма:</strong> {form.values.total}{" "}
+                {exchangeType === "CryptoToCurrency"
+                  ? form.values.currencyTo
+                  : form.values.currencyFrom}
               </Text>
 
               {form.values.comment && (
@@ -380,22 +415,34 @@ const CreateExchangeRequest = () => {
         </Stepper.Completed>
       </Stepper>
 
-      <Group mt="15" px={15}>
-        {active !== 0 && (
-          <Button variant="default" onClick={prevStep} size="lg">
-            Назад
-          </Button>
-        )}
-        {active !== 3 ? (
-          <Button onClick={nextStep} size="lg">
-            Далее
-          </Button>
-        ) : (
-          <Button size="lg" onClick={handleSubmit}>
-            Создать заявку
-          </Button>
-        )}
-      </Group>
+      {!passed && (
+        <Group my="15" px={15}>
+          {active !== 0 && (
+            <Button variant="default" onClick={prevStep} size="lg">
+              Назад
+            </Button>
+          )}
+          {active !== 3 ? (
+            <Button onClick={nextStep} size="lg">
+              Далее
+            </Button>
+          ) : (
+            <Button size="lg" onClick={handleSubmit}>
+              Создать заявку
+            </Button>
+          )}
+        </Group>
+      )}
+
+      {passed && (
+        <NavLink to="/">
+          <Group mt="15" px={15}>
+            <Button fullWidth size="lg">
+              В главное меню
+            </Button>
+          </Group>
+        </NavLink>
+      )}
     </Container>
   );
 };

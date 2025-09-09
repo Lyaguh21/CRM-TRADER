@@ -6,6 +6,7 @@ import Applications from "../../pages/Applications/Applications.page";
 import BoxOffice from "../../pages/BoxOffice/BoxOffice.page";
 import Reports from "../../pages/Reports/Reports.page";
 import CreateApplication from "../../pages/CreateApplication/CreateApplication";
+import AdminPanel from "../../pages/AdminPanel/AdminPanel";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "/reports",
         element: <Reports />,
+      },
+      {
+        path: "/admin",
+        element: <AdminPanel />,
       },
     ],
   },
