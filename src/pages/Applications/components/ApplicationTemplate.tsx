@@ -108,21 +108,28 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
         </Flex>
 
         <Flex direction="column" h="100%" align="stretch">
-          <Text fz={18} fw={600}>
-            {data.typeToTrade === "CurrencyToCrypto" ? (
-              <Flex align="center">
+          {data.typeToTrade === "CurrencyToCrypto" ? (
+            <Flex align="center">
+              <Text fz={18} fw={600}>
                 Нал
-                <IconArrowRight />
+              </Text>
+              <IconArrowRight />
+              <Text fz={18} fw={600}>
                 Крипта
-              </Flex>
-            ) : (
-              <Flex align="center">
+              </Text>
+            </Flex>
+          ) : (
+            <Flex align="center">
+              <Text fz={18} fw={600}>
                 Крипта
-                <IconArrowRight />
+              </Text>
+              <IconArrowRight />
+              <Text fz={18} fw={600}>
                 Нал
-              </Flex>
-            )}
-          </Text>
+              </Text>
+            </Flex>
+          )}
+
           <Text fz={18} fw={600}>
             Курс: {data.rate}
           </Text>
