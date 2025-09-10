@@ -3,8 +3,21 @@ import { IconChevronRight, IconClock, IconWallet } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 import { dataInterface } from "../../../entities/MainPageRequest";
 import { IconCurrencyDollar, IconCurrencyRubel } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { API } from "../../../app/helpers";
+import { useUserStore } from "../../../entities/stores/userStore";
 
 export default function FirstLine({ data }: { data: dataInterface }) {
+  const [count, setCount] = useState<number>();
+  const { userID } = useUserStore();
+
+  useEffect(() => {
+    axios.get(`${API}/trades/count?tgId=${userID}`).then((res) => {
+      setCount(res.data);
+    });
+  }, []);
+
   return (
     <Flex p={15} gap={15} justify={"space-between"} w="100%">
       <NavLink
@@ -36,10 +49,10 @@ export default function FirstLine({ data }: { data: dataInterface }) {
               <IconClock color="#3B82F6" />
             </Flex>
             <Text fw={600} fz={24}>
-              {data?.countActiveApplications}
+              {count}
             </Text>
           </Flex>
-          <Text my={10}>Мои активные заявки</Text>
+          <Text my={10}>Мои заявки</Text>
           <Text c="#737D81" fz={12}>
             Ожидают обработки
           </Text>

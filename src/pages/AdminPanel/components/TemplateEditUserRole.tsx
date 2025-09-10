@@ -21,7 +21,7 @@ export default function TemplateEditUserRole({ el }: { el: typeData }) {
     axios
       .patch(`${API}/auth?tgId=${userID}`, {
         tgId: data.tgid,
-        role: role,
+        role: value,
       })
       .then((res) => setData(res.data));
   };

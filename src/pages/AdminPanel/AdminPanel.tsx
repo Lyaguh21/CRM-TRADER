@@ -19,12 +19,18 @@ export default function AdminPanel() {
   const { userID } = useUserStore();
   const [variant, setVariant] = useState<string | null>("EditRole");
 
-  const [data, setData] = useState<typeData[] | null>();
+  const [dataVerified, setDataVerified] = useState<typeData[] | null>();
+  const [dataRole, setDataRole] = useState<typeData[] | null>();
 
   useEffect(() => {
     axios
+      .get(`${API}/auth/allUsers?tgId=${userID}`)
+      .then((res) => setDataRole(res.data))
+      .catch((err) => console.error(err));
+
+    axios
       .get(`${API}/auth/verifiedUser?tgId=${userID}`)
-      .then((res) => setData(res.data))
+      .then((res) => setDataVerified(res.data))
       .catch((err) => console.error(err));
   }, [variant]);
 
@@ -52,7 +58,7 @@ export default function AdminPanel() {
         <Tabs.Panel value="EditRole">
           <HeadlineText>Изменение ролей пользователям</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
-            {data?.map((el) => (
+            {dataRole?.map((el) => (
               <TemplateEditUserRole el={el} />
             ))}
           </Flex>
@@ -60,7 +66,7 @@ export default function AdminPanel() {
         <Tabs.Panel value="AccessUser">
           <HeadlineText>Верификация пользователей</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
-            {data?.map((el) => (
+            {dataVerified?.map((el) => (
               <TemplateVerification data={el} />
             ))}
           </Flex>

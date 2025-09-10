@@ -18,6 +18,7 @@ import {
 import axios from "axios";
 import { API } from "../../../app/helpers";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 type data = {
   id: number;
@@ -126,7 +127,7 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
             Курс: {data.rate}
           </Text>
           <Text fz={18} fw={600}>
-            Место: {data.place}
+            Место: {data.place === "location_1" ? "Соборный" : data.place}
           </Text>
         </Flex>
       </Flex>
@@ -162,9 +163,11 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
           </>
         )}
 
-        <ActionIcon bdrs={9} size={36}>
-          <IconEye />
-        </ActionIcon>
+        <NavLink to={`/applications/${data.id}`}>
+          <ActionIcon bdrs={9} size={36}>
+            <IconEye />
+          </ActionIcon>
+        </NavLink>
       </Flex>
     </Paper>
   );

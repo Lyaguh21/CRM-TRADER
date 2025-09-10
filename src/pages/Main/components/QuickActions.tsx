@@ -12,7 +12,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 export default function QuickActions() {
   const { userRole } = useUserStore();
-  const mdMobile = useMediaQuery(`(max-width: ${em(375)})`);
+  const mdMobile = useMediaQuery(`(max-width: ${em(409)})`);
   const data = [
     {
       link: "/create-application",

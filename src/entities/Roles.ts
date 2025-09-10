@@ -13,7 +13,7 @@ export const Roles = [
   },
   {
     name: "NeedVerified",
-    title: "Закрыть доступ",
+    title: "Нуждается в авторизации",
     bgColor: "#FEE2E2",
     fontColor: "#991B1B",
   },
