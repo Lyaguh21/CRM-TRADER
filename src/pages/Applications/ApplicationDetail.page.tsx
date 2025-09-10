@@ -53,18 +53,15 @@ const formatTime = (dateString: string) => {
 export default function ApplicationDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<dataType>();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
       .get(`${API}/trades/${id}`)
       .then((res) => {
         setData(res.data);
-        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setLoading(false);
       });
   }, [id]);
 
