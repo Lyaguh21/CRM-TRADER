@@ -4,7 +4,16 @@ import Header from "./components/Header";
 import { useUserStore } from "../../entities/stores/userStore";
 import axios from "axios";
 import { API } from "../../app/helpers";
-import { Flex, Text, Select, Grid, Button, Group, Box } from "@mantine/core";
+import {
+  Flex,
+  Text,
+  Select,
+  Grid,
+  Button,
+  Group,
+  Box,
+  Loader,
+} from "@mantine/core";
 import ApplicationsTemplate from "./components/ApplicationTemplate";
 import { IconX } from "@tabler/icons-react";
 import { Status } from "../../entities/Status";
@@ -74,8 +83,8 @@ export default function Applications() {
     return (
       <>
         <Header />
-        <Flex justify="center" align="center" h={200}>
-          <Text>Загрузка...</Text>
+        <Flex h="70vh" w="100%" justify="center" align="center">
+          <Loader />
         </Flex>
       </>
     );
@@ -180,6 +189,7 @@ export default function Applications() {
           </Flex>
         </Flex>
       </Box>
+
       {/* Список заявок */}
       <Flex direction="column" gap={15} mt={15} px={15}>
         {filteredData.length !== 0 ? (

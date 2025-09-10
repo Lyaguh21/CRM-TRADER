@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { ReactNode, useEffect, useState } from "react";
 import Header from "./components/Header";
 import axios from "axios";

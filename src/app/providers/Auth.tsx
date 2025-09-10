@@ -38,8 +38,8 @@ export default function Auth({ children }: { children: ReactNode }) {
 
     setLoading(true);
     axios
-      .get(`${API}/auth?tgId=796343476`)
-      // .get(`${API}/auth?tgId=${userID}`)
+      // .get(`${API}/auth?tgId=796343476`)
+      .get(`${API}/auth?tgId=${userID}`)
       .then((res) => {
         const userData = res.data;
         setData(userData);
