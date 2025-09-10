@@ -4,7 +4,7 @@ import { useUserStore } from "../../../entities/stores/userStore";
 import { API } from "../../../app/helpers";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import { IconAlertCircle, IconCheck, IconX } from "@tabler/icons-react";
+import { IconCheck, IconX } from "@tabler/icons-react";
 
 export default function UserUnauthorized({ name }: { name: string }) {
   const { userID } = useUserStore();

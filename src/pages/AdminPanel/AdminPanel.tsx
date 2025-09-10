@@ -18,6 +18,7 @@ type typeData = {
 export default function AdminPanel() {
   const { userID } = useUserStore();
   const [variant, setVariant] = useState<string | null>("EditRole");
+  const [edit, setEdit] = useState(false);
 
   const [dataVerified, setDataVerified] = useState<typeData[] | null>();
   const [dataRole, setDataRole] = useState<typeData[] | null>();
@@ -32,7 +33,7 @@ export default function AdminPanel() {
       .get(`${API}/auth/verifiedUser?tgId=${userID}`)
       .then((res) => setDataVerified(res.data))
       .catch((err) => console.error(err));
-  }, [variant]);
+  }, [variant, edit]);
 
   return (
     <Tabs value={variant} onChange={setVariant}>
@@ -67,7 +68,7 @@ export default function AdminPanel() {
           <HeadlineText>Верификация пользователей</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
             {dataVerified?.map((el) => (
-              <TemplateVerification data={el} />
+              <TemplateVerification edit={edit} setEdit={setEdit} data={el} />
             ))}
           </Flex>
         </Tabs.Panel>
