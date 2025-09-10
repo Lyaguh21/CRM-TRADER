@@ -1,4 +1,4 @@
-import Header from "../Applications/components/Header";
+import Header from "../Reports/components/Header";
 import OperationForm from "./components/OperationForm";
 
 export default function CreateApplication() {
