@@ -1,10 +1,14 @@
 // Данные для выбора валют
 export const cashCurrencies = [
-  { value: "USD", label: "USD" },
   { value: "RUB", label: "RUB" },
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
 ];
 
-export const cryptoCurrencies = [{ value: "USDT", label: "USDT" }];
+export const cryptoCurrencies = [
+  { value: "USDT", label: "USDT" },
+  { value: "THR", label: "THR" },
+];
 
 // Точки сделок
 export const locations = [{ value: "location_1", label: "Соборный" }];

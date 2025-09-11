@@ -127,7 +127,7 @@ const CreateExchangeRequest = () => {
             message: "Заявка успешно создана",
             position: "bottom-center",
             color: "green",
-            autoClose: 1000,
+            autoClose: 3000,
           }),
         setPassed(true)
       )
@@ -137,7 +137,7 @@ const CreateExchangeRequest = () => {
           message: "Что-то пошло не так",
           position: "bottom-center",
           color: "red",
-          autoClose: 1000,
+          autoClose: 3000,
         })
       );
   };

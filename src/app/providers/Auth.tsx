@@ -37,10 +37,13 @@ export default function Auth({ children }: { children: ReactNode }) {
   }, [setUserID]);
 
   useEffect(() => {
+    // Запускаем запрос только когда tgUserId установлен
+    if (!tgUserId) return;
+
     setLoading(true);
     axios
-      .get(`${API}/auth?tgId=${tgUserId}`)
       // .get(`${API}/auth?tgId=796343476`)
+      .get(`${API}/auth?tgId=${tgUserId}`)
       .then((res) => {
         const responseData = res.data;
 
@@ -76,7 +79,7 @@ export default function Auth({ children }: { children: ReactNode }) {
       });
   }, [tgUserId, setUserID, setUserRole]);
 
-  // Показываем загрузку
+  // Показываем загрузку до тех пор, пока не завершится проверка авторизации
   if (loading) {
     return (
       <Center w="100vw" h="100vh">
@@ -85,12 +88,8 @@ export default function Auth({ children }: { children: ReactNode }) {
     );
   }
 
-  // Показываем ошибку если:
-  // 1. Не удалось получить ID из Telegram
-  // 2. Ошибка API
-  // 3. Пользователь не найден
-  // 4. Нет прав
-  if (error || !userData) {
+  // Показываем ошибку только если есть конкретная ошибка
+  if (error) {
     try {
       launchParams = retrieveLaunchParams();
     } catch {}

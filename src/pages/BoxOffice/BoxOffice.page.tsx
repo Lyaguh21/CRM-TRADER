@@ -8,6 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Paper, Text, Box, Flex, Button } from "@mantine/core";
 import {
   IconCurrencyDollar,
+  IconCurrencyEuro,
   IconCurrencyRubel,
   IconMinus,
   IconPlus,
@@ -49,14 +50,6 @@ export default function BoxOffice() {
 
   const info = [
     {
-      name: "USD",
-      count: currency?.USD ?? 0,
-      title: "Доллар США",
-      icon1: <IconCurrencyDollar color="#50A34A" size={32} />,
-      icon2: <IconCurrencyDollar />,
-      bg: "#DCFCE7",
-    },
-    {
       name: "RUB",
       count: currency?.RUB ?? 0,
       title: "Российский рубль",
@@ -65,11 +58,43 @@ export default function BoxOffice() {
       bg: "#F3E8FF",
     },
     {
+      name: "USD",
+      count: currency?.USD ?? 0,
+      title: "Доллар США",
+      icon1: <IconCurrencyDollar color="#50A34A" size={32} />,
+      icon2: <IconCurrencyDollar />,
+      bg: "#DCFCE7",
+    },
+    {
+      name: "EUR",
+      count: currency?.RUB ?? 0,
+      title: "Евро",
+      icon1: <IconCurrencyEuro color="#9333EA" size={32} />,
+      icon2: <IconCurrencyEuro />,
+      bg: "#F3E8FF",
+    },
+    {
       name: "USDT",
       count: currency?.USDT ?? 0,
       title: "Tether",
       icon1: <img src="/icons/Usdt.svg" />,
-      icon2: <img src="/icons/Usdt.svg" height={24} width={24} />,
+      icon2: (
+        <Text fz={22} w={19} ml={5}>
+          ₮
+        </Text>
+      ),
+      bg: "#DBEAFE",
+    },
+    {
+      name: "THR",
+      count: currency?.THR ?? 0,
+      title: "Tether",
+      icon1: <img src="/icons/Usdt.svg" />,
+      icon2: (
+        <Text fz={22} w={19} ml={5}>
+          ₮
+        </Text>
+      ),
       bg: "#DBEAFE",
     },
   ];
@@ -98,7 +123,7 @@ export default function BoxOffice() {
           </Text>
           {info.map((el, index) => (
             <Flex
-              py={15}
+              py={10}
               bg="white"
               justify="space-between"
               align="center"

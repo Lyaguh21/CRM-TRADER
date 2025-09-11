@@ -2,7 +2,7 @@ import { Paper, Text, Flex, Box, Select } from "@mantine/core";
 import axios from "axios";
 import { API } from "../../../app/helpers";
 import { useUserStore } from "../../../entities/stores/userStore";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Добавляем useEffect
 import { Roles } from "../../../entities/Roles";
 
 type typeData = {
@@ -11,10 +11,25 @@ type typeData = {
   role: string;
   firstName: string;
 };
-export default function TemplateEditUserRole({ el }: { el: typeData }) {
+
+type TemplateEditUserRoleProps = {
+  el: typeData;
+  onUpdate?: () => void;
+};
+
+export default function TemplateEditUserRole({
+  el,
+  onUpdate,
+}: TemplateEditUserRoleProps) {
   const { userID } = useUserStore();
   const [data, setData] = useState(el);
   const [role, setRole] = useState<string | null>(el.role);
+
+  // Обновляем состояние при изменении пропса el
+  useEffect(() => {
+    setData(el);
+    setRole(el.role);
+  }, [el]);
 
   const handleEditRole = (value: string | null) => {
     setRole(value);
@@ -23,7 +38,17 @@ export default function TemplateEditUserRole({ el }: { el: typeData }) {
         tgId: data.tgid,
         role: value,
       })
-      .then((res) => setData(res.data));
+      .then((res) => {
+        setData(res.data);
+        if (onUpdate) {
+          onUpdate();
+        }
+      })
+      .catch((err) => {
+        console.error("Error updating role:", err);
+        // В случае ошибки возвращаем предыдущее значение
+        setRole(data.role);
+      });
   };
 
   return (
@@ -34,7 +59,10 @@ export default function TemplateEditUserRole({ el }: { el: typeData }) {
             Имя: <b>{data.firstName}</b>
           </Text>
           <Text fz={16}>
-            Роль: <b>{Roles.find((el) => el.name === data.role)?.title}</b>
+            Роль:{" "}
+            <b>
+              {Roles.find((roleItem) => roleItem.name === data.role)?.title}
+            </b>
           </Text>
           <a
             href={`tg://user?id=${data.tgid}`}
@@ -52,10 +80,10 @@ export default function TemplateEditUserRole({ el }: { el: typeData }) {
         <Select
           allowDeselect={false}
           value={role}
-          onChange={(value) => handleEditRole(value)}
-          data={Roles.map((role) => ({
-            value: role.name, // ← сохраняется в стейт
-            label: role.title, // ← отображается пользователю
+          onChange={handleEditRole}
+          data={Roles.map((roleItem) => ({
+            value: roleItem.name,
+            label: roleItem.title,
           }))}
         />
       </Flex>

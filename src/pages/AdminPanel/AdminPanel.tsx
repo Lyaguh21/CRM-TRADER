@@ -15,25 +15,36 @@ type typeData = {
   role: string;
   firstName: string;
 };
+
 export default function AdminPanel() {
   const { userID } = useUserStore();
   const [variant, setVariant] = useState<string | null>("EditRole");
   const [edit, setEdit] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0); // Добавляем счетчик обновлений
 
   const [dataVerified, setDataVerified] = useState<typeData[] | null>();
   const [dataRole, setDataRole] = useState<typeData[] | null>();
 
-  useEffect(() => {
-    axios
-      .get(`${API}/auth/allUsers?tgId=${userID}`)
-      .then((res) => setDataRole(res.data))
-      .catch((err) => console.error(err));
-
+  const fetchData = () => {
     axios
       .get(`${API}/auth/verifiedUser?tgId=${userID}`)
       .then((res) => setDataVerified(res.data))
       .catch((err) => console.error(err));
-  }, [variant, edit]);
+
+    axios
+      .get(`${API}/auth/allUsers?tgId=${userID}`)
+      .then((res) => setDataRole(res.data))
+      .catch((err) => console.error(err));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [variant, edit, userID, refreshCounter]); // Добавляем refreshCounter в зависимости
+
+  // Функция для принудительного обновления данных
+  const handleUpdate = () => {
+    setRefreshCounter((prev) => prev + 1); // Увеличиваем счетчик для принудительного перерендера
+  };
 
   return (
     <Tabs value={variant} onChange={setVariant}>
@@ -60,7 +71,11 @@ export default function AdminPanel() {
           <HeadlineText>Изменение ролей пользователям</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
             {dataRole?.map((el) => (
-              <TemplateEditUserRole el={el} />
+              <TemplateEditUserRole
+                key={`role-${el.id}-${refreshCounter}`} // Добавляем счетчик в ключ
+                el={el}
+                onUpdate={handleUpdate}
+              />
             ))}
           </Flex>
         </Tabs.Panel>
@@ -68,7 +83,13 @@ export default function AdminPanel() {
           <HeadlineText>Верификация пользователей</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
             {dataVerified?.map((el) => (
-              <TemplateVerification edit={edit} setEdit={setEdit} data={el} />
+              <TemplateVerification
+                key={`verified-${el.id}-${refreshCounter}`} // Добавляем счетчик в ключ
+                edit={edit}
+                setEdit={setEdit}
+                data={el}
+                onUpdate={handleUpdate}
+              />
             ))}
           </Flex>
         </Tabs.Panel>

@@ -54,7 +54,7 @@ export default function ModalPushCurrency({
             message: "Средства были добавлены",
             position: "bottom-center",
             color: "green",
-            autoClose: 1000,
+            autoClose: 3000,
           }),
         setChange(!change)
       )
@@ -64,7 +64,7 @@ export default function ModalPushCurrency({
           message: "Что-то пошло не так",
           position: "bottom-center",
           color: "red",
-          autoClose: 1000,
+          autoClose: 3000,
         })
       );
 
@@ -87,13 +87,16 @@ export default function ModalPushCurrency({
         <Stack>
           <Select
             withAsterisk
+            allowDeselect={false}
             size="lg"
             label="Валюта"
             placeholder="Выберите валюту"
             data={[
               { value: "RUB", label: "RUB - Российский рубль" },
               { value: "USD", label: "USD - Доллар США" },
+              { value: "EUR", label: "RUB - Евро" },
               { value: "USDT", label: "USDT - Tether" },
+              { value: "THR", label: "THR - Tether" },
             ]}
             {...form.getInputProps("currency")}
           />

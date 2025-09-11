@@ -10,24 +10,35 @@ type typeData = {
   role: string;
   firstName: string;
 };
+
+type TemplateVerificationProps = {
+  data: typeData;
+  edit: boolean;
+  setEdit: (edit: boolean) => void;
+  onUpdate?: () => void; // Добавляем callback для обновления
+};
+
 export default function TemplateVerification({
   data,
   edit,
   setEdit,
-}: {
-  data: typeData;
-  edit: boolean;
-  // @ts-ignore
-  setEdit: any;
-}) {
+  onUpdate,
+}: TemplateVerificationProps) {
   const { userID } = useUserStore();
+
   const HandleVerifiedUser = () => {
     axios
       .patch(`${API}/auth?tgId=${userID}`, {
         tgId: data.tgid,
         role: "Operator",
       })
-      .then(() => setEdit(!edit));
+      .then(() => {
+        setEdit(!edit);
+        // Вызываем callback для обновления данных в родительском компоненте
+        if (onUpdate) {
+          onUpdate();
+        }
+      });
   };
 
   return (
@@ -40,13 +51,11 @@ export default function TemplateVerification({
           <a
             href={`tg://user?id=${data.tgid}`}
             style={{
-              textDecoration: "underline",
               color: "black",
               fontSize: "16px",
-              fontWeight: "500",
             }}
           >
-            Ссылка на аккаунт
+            ID: <b>#{data.tgid}</b>
           </a>
         </Box>
 
