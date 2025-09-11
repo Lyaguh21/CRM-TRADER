@@ -10,13 +10,24 @@ type typeData = {
   role: string;
   firstName: string;
 };
-export default function TemplateVerification({ data }: { data: typeData }) {
+export default function TemplateVerification({
+  data,
+  edit,
+  setEdit,
+}: {
+  data: typeData;
+  edit: boolean;
+  // @ts-ignore
+  setEdit: any;
+}) {
   const { userID } = useUserStore();
   const HandleVerifiedUser = () => {
-    axios.patch(`${API}/auth?tgId=${userID}`, {
-      tgId: data.tgid,
-      role: "Operator",
-    });
+    axios
+      .patch(`${API}/auth?tgId=${userID}`, {
+        tgId: data.tgid,
+        role: "Operator",
+      })
+      .then(() => setEdit(!edit));
   };
 
   return (

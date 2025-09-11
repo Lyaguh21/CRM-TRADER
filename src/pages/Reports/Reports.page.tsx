@@ -1,11 +1,36 @@
-import { Box, Text } from "@mantine/core";
+import { Box, Button, Flex, Paper } from "@mantine/core";
+import Header from "./components/Header";
+import { useState } from "react";
+import { DateInput } from "@mantine/dates";
 
 export default function Reports() {
+  const [dateFrom, setDateFrom] = useState<string | null>();
+  const [dateTo, setDateTo] = useState<string | null>();
+
   return (
-    <Box w="100%" bg="blue">
-      <Text py={50} ta="center" fz={28} c="white">
-        Отчеты
-      </Text>
-    </Box>
+    <>
+      <Header />
+      <Box p={15}>
+        <Paper withBorder bg="white" p={15} shadow="xs">
+          <Flex direction="column" gap={20}>
+            <DateInput
+              size="lg"
+              value={dateFrom}
+              onChange={setDateFrom}
+              label="С"
+              placeholder="Выберите начальную дату"
+            />
+            <DateInput
+              size="lg"
+              value={dateTo}
+              onChange={setDateTo}
+              label="По"
+              placeholder="Выберите конечную дату"
+            />
+            <Button size="lg">Скачать отчет</Button>
+          </Flex>
+        </Paper>
+      </Box>
+    </>
   );
 }

@@ -50,7 +50,7 @@ export default function BoxOffice() {
   const info = [
     {
       name: "USD",
-      count: isEmpty(currency) ? 0 : currency?.USD,
+      count: currency?.USD ?? 0,
       title: "Доллар США",
       icon1: <IconCurrencyDollar color="#50A34A" size={32} />,
       icon2: <IconCurrencyDollar />,
@@ -58,7 +58,7 @@ export default function BoxOffice() {
     },
     {
       name: "RUB",
-      count: isEmpty(currency) ? 0 : currency?.RUB,
+      count: currency?.RUB ?? 0,
       title: "Российский рубль",
       icon1: <IconCurrencyRubel color="#9333EA" size={32} />,
       icon2: <IconCurrencyRubel />,
@@ -66,7 +66,7 @@ export default function BoxOffice() {
     },
     {
       name: "USDT",
-      count: isEmpty(currency) ? 0 : currency?.USDT,
+      count: currency?.USDT ?? 0,
       title: "Tether",
       icon1: <img src="/icons/Usdt.svg" />,
       icon2: <img src="/icons/Usdt.svg" height={24} width={24} />,
