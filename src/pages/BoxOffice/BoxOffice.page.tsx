@@ -67,7 +67,7 @@ export default function BoxOffice() {
     },
     {
       name: "EUR",
-      count: currency?.RUB ?? 0,
+      count: currency?.EUR ?? 0,
       title: "Евро",
       icon1: <IconCurrencyEuro color="#9333EA" size={32} />,
       icon2: <IconCurrencyEuro />,

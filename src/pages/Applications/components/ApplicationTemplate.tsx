@@ -148,6 +148,7 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
       <Flex
         align={"center"}
         gap={5}
+        mt={10}
         justify={data.status === "InProcess" ? "space-between" : "end"}
       >
         {data.status === "InProcess" && (

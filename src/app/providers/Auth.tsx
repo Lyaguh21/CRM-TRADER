@@ -38,12 +38,12 @@ export default function Auth({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Запускаем запрос только когда tgUserId установлен
-    if (!tgUserId) return;
+    // if (!tgUserId) return;
 
     setLoading(true);
     axios
-      // .get(`${API}/auth?tgId=796343476`)
-      .get(`${API}/auth?tgId=${tgUserId}`)
+      .get(`${API}/auth?tgId=796343476`)
+      // .get(`${API}/auth?tgId=${tgUserId}`)
       .then((res) => {
         const responseData = res.data;
 
