@@ -5,3 +5,11 @@ export type Currency = {
   USDT: number;
   THR: number;
 };
+
+export const CurrencyArray = [
+  { value: "RUB", label: "RUB - Российский рубль" },
+  { value: "USD", label: "USD - Доллар США" },
+  { value: "EUR", label: "RUB - Евро" },
+  { value: "USDT", label: "USDT - Tether" },
+  { value: "THR", label: "THR - Tether" },
+];

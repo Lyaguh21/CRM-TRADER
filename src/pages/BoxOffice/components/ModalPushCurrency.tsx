@@ -10,6 +10,8 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import { API } from "../../../app/helpers";
 import { notifications } from "@mantine/notifications";
+import { useUserStore } from "../../../entities/stores/userStore";
+import { CurrencyArray } from "../../../entities/Currency";
 
 export default function ModalPushCurrency({
   opened,
@@ -23,6 +25,7 @@ export default function ModalPushCurrency({
   setChange: any;
   change: boolean;
 }) {
+  const { userID } = useUserStore();
   const form = useForm({
     initialValues: {
       currency: "",
@@ -41,7 +44,7 @@ export default function ModalPushCurrency({
 
   const handleSubmit = () => {
     axios
-      .post(`${API}/till`, {
+      .post(`${API}/till?=${userID}`, {
         TillType: "Push",
         ValueType: form.values.currency,
         Count: Number(form.values.amount),
@@ -91,13 +94,7 @@ export default function ModalPushCurrency({
             size="lg"
             label="Валюта"
             placeholder="Выберите валюту"
-            data={[
-              { value: "RUB", label: "RUB - Российский рубль" },
-              { value: "USD", label: "USD - Доллар США" },
-              { value: "EUR", label: "RUB - Евро" },
-              { value: "USDT", label: "USDT - Tether" },
-              { value: "THR", label: "THR - Tether" },
-            ]}
+            data={CurrencyArray}
             {...form.getInputProps("currency")}
           />
 
