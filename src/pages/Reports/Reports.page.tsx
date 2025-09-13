@@ -19,9 +19,13 @@ export default function Reports() {
   const handleClick = () => {
     if (type === "Applications") {
       axios
-        .get(
-          `${API}/table/trade?TradeType=${tradeType}&FromStartDate=${dateFrom}&ToStartDate=${dateTo}`
-        )
+        .get(`${API}/table/trade`, {
+          params: {
+            ...(tradeType !== "All" && tradeType && { TradeType: tradeType }),
+            FromStartDate: dateFrom,
+            ToStartDate: dateTo,
+          },
+        })
         .then(() =>
           notifications.show({
             title: "Успешно",
@@ -42,9 +46,16 @@ export default function Reports() {
         );
     } else {
       axios
-        .get(
-          `${API}/table/tillValueType=${valueTypeTill}&FromStartDate=${dateFrom}&ToStartDate=${dateTo}&OperationType=${operationType}`
-        )
+        .get(`${API}/table/till`, {
+          params: {
+            ...(valueTypeTill !== "All" &&
+              valueTypeTill && { ValueType: valueTypeTill }),
+            FromStartDate: dateFrom,
+            ToStartDate: dateTo,
+            ...(operationType !== "All" &&
+              operationType && { OperationType: operationType }),
+          },
+        })
         .then(() =>
           notifications.show({
             title: "Успешно",
@@ -91,7 +102,7 @@ export default function Reports() {
                   onChange={setValueTypeTill}
                   label="Тип валюты"
                   allowDeselect={false}
-                  data={CurrencyArray}
+                  data={[{ value: "All", label: "Все" }, ...CurrencyArray]}
                 />
                 <Select
                   size="lg"
@@ -100,6 +111,7 @@ export default function Reports() {
                   allowDeselect={false}
                   label="Тип операции"
                   data={[
+                    { value: "All", label: "Все" },
                     { value: "Pull", label: "Пополнение" },
                     { value: "Push", label: "Вывод" },
                   ]}
@@ -116,6 +128,7 @@ export default function Reports() {
                   allowDeselect={false}
                   label="Тип операции"
                   data={[
+                    { value: "All", label: "Все" },
                     { value: "CryptoToCurrency", label: "Крипта/Нал" },
                     { value: "CurrencyToCrypto", label: "Нал/Крипта" },
                   ]}
@@ -139,17 +152,6 @@ export default function Reports() {
             <Button size="lg" onClick={handleClick}>
               Сформировать отчет
             </Button>
-            <Text ta="center" style={{ textDecoration: "underline" }}>
-              <a
-                href={
-                  type === "Applications"
-                    ? "https://docs.google.com/spreadsheets/d/1FYMjDXtYuH3I7nF6WldKTA8pXvzEwQl-JcHn6gLgPew/edit?gid=0#gid=0"
-                    : "https://docs.google.com/spreadsheets/d/1Deb-5X588PtkyWbw4jPf4qo6ij-P1B--C6u8fMkrmdM/edit?gid=0#gid=0"
-                }
-              >
-                Таблица доступна по ссылке
-              </a>
-            </Text>
           </Flex>
         </Paper>
       </Box>
