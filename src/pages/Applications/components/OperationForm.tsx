@@ -78,11 +78,14 @@ const CreateExchangeRequest = () => {
       return;
     }
 
+    let calculatedTotal: number;
+
     if (exchangeType === "CurrencyToCrypto") {
-      const calculatedTotal = numAmount / numRate;
+      calculatedTotal = numAmount / numRate;
     } else {
-      const calculatedTotal = numAmount * numRate;
+      calculatedTotal = numAmount * numRate;
     }
+
     form.setFieldValue("total", calculatedTotal);
   };
 
