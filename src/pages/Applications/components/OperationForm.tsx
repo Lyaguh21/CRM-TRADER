@@ -70,8 +70,8 @@ const CreateExchangeRequest = () => {
     const { amount, rate } = form.values;
 
     // Преобразуем в числа и проверяем на валидность
-    const numAmount = Number(amount) || 0;
-    const numRate = Number(rate) || 1;
+    let numAmount = Number(amount) || 0;
+    let numRate = Number(rate) || 1;
 
     if (numRate === 0 || numAmount === 0) {
       form.setFieldValue("total", 0);
