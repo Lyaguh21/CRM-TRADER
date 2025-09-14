@@ -293,7 +293,7 @@ const CreateExchangeRequest = () => {
                 Итоговая сумма: {form.values.total}{" "}
                 {exchangeType === "CryptoToCurrency"
                   ? form.values.currencyTo
-                  : form.values.currencyFrom}
+                  : form.values.currencyTo}
               </Text>
               <Text size="sm" color="dimmed">
                 {exchangeType === "CryptoToCurrency" &&
