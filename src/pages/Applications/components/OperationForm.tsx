@@ -70,22 +70,19 @@ const CreateExchangeRequest = () => {
     const { amount, rate } = form.values;
 
     // Преобразуем в числа и проверяем на валидность
-    let numAmount = Number(amount) || 0;
-    let numRate = Number(rate) || 1;
+    const numAmount = Number(amount) || 0;
+    const numRate = Number(rate) || 1;
 
     if (numRate === 0 || numAmount === 0) {
       form.setFieldValue("total", 0);
       return;
     }
 
-    if (
-      exchangeType === "CryptoToCurrency" &&
-      form.values.currencyTo === "RUB"
-    ) {
-      numRate = 1 / numRate;
+    if (exchangeType === "CurrencyToCrypto") {
+      const calculatedTotal = numAmount / numRate;
+    } else {
+      const calculatedTotal = numAmount * numRate;
     }
-
-    const calculatedTotal = numAmount * numRate;
     form.setFieldValue("total", calculatedTotal);
   };
 
@@ -252,11 +249,7 @@ const CreateExchangeRequest = () => {
           <Card withBorder>
             <Grid>
               <NumberInput
-                label={`Количество ( ${
-                  exchangeType === "CryptoToCurrency"
-                    ? form.values.currencyFrom
-                    : form.values.currencyTo
-                })`}
+                label={`Количество ( ${form.values.currencyFrom})`}
                 value={form.values.amount}
                 onChange={handleAmountChange}
                 min={0}
@@ -300,9 +293,14 @@ const CreateExchangeRequest = () => {
                   : form.values.currencyFrom}
               </Text>
               <Text size="sm" color="dimmed">
-                {`${form.values.amount} * ${
-                  form.values.rate
-                } = ${form.values.total.toFixed(2)}`}
+                {exchangeType === "CryptoToCurrency" &&
+                  `${form.values.amount} * ${
+                    form.values.rate
+                  } = ${form.values.total.toFixed(2)}`}
+                {exchangeType === "CurrencyToCrypto" &&
+                  `${form.values.amount} / ${
+                    form.values.rate
+                  } = ${form.values.total.toFixed(2)}`}
               </Text>
             </Box>
           </Card>
