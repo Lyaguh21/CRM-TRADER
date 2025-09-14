@@ -7,7 +7,6 @@ export const cashCurrencies = [
 
 export const cryptoCurrencies = [
   { value: "USDT", label: "USDT" },
-  { value: "THR", label: "THR" },
 ];
 
 // Точки сделок

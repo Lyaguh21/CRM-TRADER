@@ -85,18 +85,6 @@ export default function BoxOffice() {
       ),
       bg: "#DBEAFE",
     },
-    {
-      name: "THR",
-      count: currency?.THR ?? 0,
-      title: "Tether",
-      icon1: <img src="/icons/Usdt.svg" />,
-      icon2: (
-        <Text fz={22} w={19} ml={5}>
-          ₮
-        </Text>
-      ),
-      bg: "#DBEAFE",
-    },
   ];
 
   return (

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import { Header } from "./components/Header";
+import Header from "./components/Header";
 import { useUserStore } from "../../entities/stores/userStore";
 import axios from "axios";
 import { API } from "../../app/helpers";
