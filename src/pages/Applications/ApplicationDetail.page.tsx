@@ -14,10 +14,11 @@ import { Status } from "../../entities/Status";
 import { NavLink, useParams } from "react-router-dom";
 import axios from "axios";
 import { API } from "../../app/helpers";
+import { operationType } from "../../entities/OperationFormInfo";
 
 type dataType = {
   id: number;
-  typeToTrade: "CurrencyToCrypto" | "CryptoToCurrency";
+  typeToTrade: "CurrencyToCrypto" | "CryptoToCurrency" | "CurrencyToCurrency";
   currency: string;
   crypto: string;
   count: number;
@@ -29,6 +30,7 @@ type dataType = {
   operatorId: number;
   createdAt: string;
   updatedAt: string;
+  wallet: string;
 };
 
 // Форматирование даты
@@ -122,15 +124,10 @@ export default function ApplicationDetailPage() {
               Тип обмена
             </Text>
             <Text fw={600}>
-              {data?.typeToTrade === "CurrencyToCrypto" ? (
-                <Flex align="center" gap="xs">
-                  Нал → Крипта
-                </Flex>
-              ) : (
-                <Flex align="center" gap="xs">
-                  Крипта → Нал
-                </Flex>
-              )}
+              {
+                operationType.find((el) => el.value === data?.typeToTrade)
+                  ?.label
+              }
             </Text>
           </Flex>
 
@@ -181,7 +178,12 @@ export default function ApplicationDetailPage() {
               {data?.place === "location_1" ? "Соборный" : data?.place}
             </Text>
           </Flex>
-
+          <Flex justify="space-between" align="center">
+            <Text size="sm" c="dimmed">
+              Кошелек
+            </Text>
+            <Text fw={600}>#{data?.wallet}</Text>
+          </Flex>
           <Flex justify="space-between" align="center">
             <Text size="sm" c="dimmed">
               Оператор

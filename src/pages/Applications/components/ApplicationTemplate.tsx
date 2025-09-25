@@ -108,7 +108,7 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
         </Flex>
 
         <Flex direction="column" h="100%" align="stretch">
-          {data.typeToTrade === "CurrencyToCrypto" ? (
+          {data.typeToTrade === "CurrencyToCrypto" && (
             <Flex align="center">
               <Text fz={18} fw={600}>
                 Нал
@@ -118,7 +118,21 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
                 Крипта
               </Text>
             </Flex>
-          ) : (
+          )}
+
+          {data.typeToTrade === "CurrencyToCurrency" && (
+            <Flex align="center">
+              <Text fz={18} fw={600}>
+                Нал
+              </Text>
+              <IconArrowRight />
+              <Text fz={18} fw={600}>
+                Нал
+              </Text>
+            </Flex>
+          )}
+
+          {data.typeToTrade === "CryptoToCurrency" && (
             <Flex align="center">
               <Text fz={18} fw={600}>
                 Крипта

@@ -24,6 +24,7 @@ import {
   locations,
   cryptoCurrencies,
   cashCurrencies,
+  operationType,
 } from "../../../entities/OperationFormInfo";
 import {
   IconClipboard,
@@ -36,6 +37,33 @@ import { API } from "../../../app/helpers";
 import { useUserStore } from "../../../entities/stores/userStore";
 import { notifications } from "@mantine/notifications";
 import { NavLink } from "react-router-dom";
+
+const mathOperationDivision = [
+  {
+    From: "RUB",
+    To: "EUR",
+  },
+  {
+    From: "RUB",
+    To: "USD",
+  },
+  {
+    From: "USD",
+    To: "EUR",
+  },
+  {
+    From: "RUB",
+    To: "USDT",
+  },
+  {
+    From: "USD",
+    To: "USDT",
+  },
+  {
+    From: "EUR",
+    To: "USDT",
+  },
+];
 
 const CreateExchangeRequest = () => {
   const { userID } = useUserStore();
@@ -56,6 +84,7 @@ const CreateExchangeRequest = () => {
       total: 0, //итоговая сумма
       location: "", //локация
       locationType: "point",
+      wallet: "", //кошелек
       comment: "",
     },
   });
@@ -80,13 +109,19 @@ const CreateExchangeRequest = () => {
 
     let calculatedTotal: number;
 
-    if (exchangeType === "CurrencyToCrypto") {
+    if (
+      mathOperationDivision.find(
+        (el) =>
+          el.From === form.values.currencyFrom &&
+          el.To === form.values.currencyTo
+      )
+    ) {
       calculatedTotal = numAmount / numRate;
     } else {
       calculatedTotal = numAmount * numRate;
     }
 
-    form.setFieldValue("total", calculatedTotal);
+    form.setFieldValue("total", Number(calculatedTotal.toFixed(4)));
   };
 
   useEffect(() => {
@@ -125,6 +160,7 @@ const CreateExchangeRequest = () => {
         Count: form.values.amount,
         Rate: form.values.rate,
         Place: form.values.location,
+        Wallet: form.values.wallet,
         Comments: form.values.comment,
       })
       .then(
@@ -171,10 +207,7 @@ const CreateExchangeRequest = () => {
                   size="lg"
                   value={exchangeType}
                   onChange={handleExchangeTypeChange}
-                  data={[
-                    { value: "CryptoToCurrency", label: "Крипта → Нал" },
-                    { value: "CurrencyToCrypto", label: "Нал → Крипта" },
-                  ]}
+                  data={operationType}
                 />
               </Grid.Col>
 
@@ -240,6 +273,36 @@ const CreateExchangeRequest = () => {
                   </Grid.Col>
                 </>
               )}
+
+              {/* Нал -> Нал */}
+              {exchangeType === "CurrencyToCurrency" && (
+                <>
+                  <Grid.Col span={12}>
+                    <CustomSelect
+                      label="Покупатель отдает"
+                      placeholder="Выберите валюту"
+                      size="lg"
+                      value={form.values.currencyFrom}
+                      onChange={(value) =>
+                        form.setFieldValue("currencyFrom", value)
+                      }
+                      data={cashCurrencies}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={12}>
+                    <CustomSelect
+                      label="Покупатель отдает"
+                      placeholder="Выберите валюту"
+                      size="lg"
+                      value={form.values.currencyTo}
+                      onChange={(value) =>
+                        form.setFieldValue("currencyTo", value)
+                      }
+                      data={cashCurrencies}
+                    />
+                  </Grid.Col>
+                </>
+              )}
             </Grid>
           </Card>
         </Stepper.Step>
@@ -296,11 +359,20 @@ const CreateExchangeRequest = () => {
                   : form.values.currencyTo}
               </Text>
               <Text size="sm" color="dimmed">
-                {exchangeType === "CryptoToCurrency" &&
+                {mathOperationDivision.find(
+                  (el) =>
+                    el.From === form.values.currencyFrom &&
+                    el.To === form.values.currencyTo
+                ) === undefined &&
                   `${form.values.amount} * ${
                     form.values.rate
                   } = ${form.values.total.toFixed(2)}`}
-                {exchangeType === "CurrencyToCrypto" &&
+
+                {mathOperationDivision.find(
+                  (el) =>
+                    el.From === form.values.currencyFrom &&
+                    el.To === form.values.currencyTo
+                ) &&
                   `${form.values.amount} / ${
                     form.values.rate
                   } = ${form.values.total.toFixed(2)}`}
@@ -350,6 +422,16 @@ const CreateExchangeRequest = () => {
                 style={{ marginBottom: "15px" }}
               />
             )}
+            <TextInput
+              label="Кошелек"
+              size="lg"
+              placeholder="Введите кошелек покупателя"
+              value={form.values.wallet}
+              onChange={(event) =>
+                form.setFieldValue("wallet", event.currentTarget.value)
+              }
+              style={{ marginBottom: "15px" }}
+            />
 
             <Textarea
               label="Комментарий (необязательно)"
@@ -373,9 +455,7 @@ const CreateExchangeRequest = () => {
             <Box style={{ marginBottom: "15px" }}>
               <Text>
                 <strong>Тип операции:</strong>{" "}
-                {exchangeType === "CryptoToCurrency"
-                  ? "Крипта → Нал"
-                  : "Нал → Крипта"}
+                {operationType.find((el) => el.value === exchangeType)?.label}
               </Text>
               <Text>
                 <strong>Отдаете:</strong> {form.values.currencyFrom}
@@ -398,6 +478,9 @@ const CreateExchangeRequest = () => {
                 {exchangeType === "CryptoToCurrency"
                   ? form.values.currencyTo
                   : form.values.currencyFrom}
+              </Text>
+              <Text>
+                <strong>Кошелек:</strong> {form.values.wallet}
               </Text>
 
               {form.values.comment && (

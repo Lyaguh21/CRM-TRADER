@@ -5,9 +5,7 @@ export const cashCurrencies = [
   { value: "EUR", label: "EUR" },
 ];
 
-export const cryptoCurrencies = [
-  { value: "USDT", label: "USDT" },
-];
+export const cryptoCurrencies = [{ value: "USDT", label: "USDT" }];
 
 // Точки сделок
 export const locations = [{ value: "location_1", label: "Соборный" }];
@@ -15,4 +13,10 @@ export const locations = [{ value: "location_1", label: "Соборный" }];
 export const locationTypes = [
   { value: "point", label: "Выбрать из списка" },
   { value: "custom", label: "Произвольный адрес" },
+];
+
+export const operationType = [
+  { value: "CryptoToCurrency", label: "Крипта → Нал" },
+  { value: "CurrencyToCrypto", label: "Нал → Крипта" },
+  { value: "CurrencyToCurrency", label: "Нал → Нал" },
 ];
