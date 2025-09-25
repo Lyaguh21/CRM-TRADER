@@ -17,7 +17,7 @@ export default function FirstLine() {
     axios.get(`${API}/trades/count?tgId=${userID}`).then((res) => {
       setCount(res.data);
     });
-    axios.get(`${API}/till`).then((res) => {
+    axios.get(`${API}/till?tgId=${userID}`).then((res) => {
       setCurrency(res.data);
     });
   }, []);

@@ -17,6 +17,7 @@ import { Link, useParams } from "react-router-dom";
 import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import ModalPushCurrency from "./components/ModalPushCurrency";
 import ModalPullCurrency from "./components/ModalPullCurrency";
+import { useUserStore } from "../../../entities/stores/userStore";
 
 export default function AdminTill() {
   const [currency, setCurrency] = useState<Currency>();
@@ -26,10 +27,11 @@ export default function AdminTill() {
   const [openedPull, { open: openPull, close: closePull }] =
     useDisclosure(false);
 
+  const { userID } = useUserStore();
   const { id, name } = useParams();
 
   useEffect(() => {
-    axios.get(`${API}/till`).then((res) => {
+    axios.get(`${API}/till?tgId=${userID}`).then((res) => {
       setCurrency(res.data);
     }); //Добавить получение кассы по оператору
   }, [change]);

@@ -121,7 +121,7 @@ const CreateExchangeRequest = () => {
       calculatedTotal = numAmount * numRate;
     }
 
-    form.setFieldValue("total", Number(calculatedTotal.toFixed(4)));
+    form.setFieldValue("total", Number(calculatedTotal.toFixed(2)));
   };
 
   useEffect(() => {
@@ -149,16 +149,11 @@ const CreateExchangeRequest = () => {
     axios
       .post(`${API}/trades?tgId=${userID}`, {
         TradeType: exchangeType,
-        Currency:
-          exchangeType === "CryptoToCurrency"
-            ? form.values.currencyTo
-            : form.values.currencyFrom,
-        Crypto:
-          exchangeType === "CryptoToCurrency"
-            ? form.values.currencyFrom
-            : form.values.currencyTo,
+        From: form.values.currencyFrom,
+        To: form.values.currencyTo,
         Count: form.values.amount,
         Rate: form.values.rate,
+        Total: form.values.total,
         Place: form.values.location,
         Wallet: form.values.wallet,
         Comments: form.values.comment,

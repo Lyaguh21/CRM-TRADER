@@ -19,8 +19,8 @@ import { operationType } from "../../entities/OperationFormInfo";
 type dataType = {
   id: number;
   typeToTrade: "CurrencyToCrypto" | "CryptoToCurrency" | "CurrencyToCurrency";
-  currency: string;
-  crypto: string;
+  from: string;
+  to: string;
   count: number;
   rate: number;
   total: number;
@@ -135,29 +135,13 @@ export default function ApplicationDetailPage() {
 
           {/* Суммы */}
           <Flex direction="column" align="center" my="md">
-            {data?.typeToTrade === "CryptoToCurrency" && (
-              <>
-                <Text size="xl" fw={700}>
-                  {data?.count} {data?.crypto}
-                </Text>
-                <IconArrowDown color="#9CA3AF" size={24} />
-                <Text size="xl" fw={700}>
-                  {data?.total} {data?.currency}
-                </Text>
-              </>
-            )}
-
-            {data?.typeToTrade === "CurrencyToCrypto" && (
-              <>
-                <Text size="xl" fw={700}>
-                  {data?.total} {data?.currency}
-                </Text>
-                <IconArrowDown color="#9CA3AF" size={24} />
-                <Text size="xl" fw={700}>
-                  {data?.count} {data?.crypto}
-                </Text>
-              </>
-            )}
+            <Text size="xl" fw={700}>
+              {data?.total} {data?.from}
+            </Text>
+            <IconArrowDown color="#9CA3AF" size={24} />
+            <Text size="xl" fw={700}>
+              {data?.count} {data?.to}
+            </Text>
           </Flex>
 
           <Divider />

@@ -44,7 +44,7 @@ export default function ModalPushCurrency({
 
   const handleSubmit = () => {
     axios
-      .post(`${API}/till?=${userID}`, {
+      .post(`${API}/till?tgId=${userID}`, {
         TillType: "Push",
         ValueType: form.values.currency,
         Count: Number(form.values.amount),

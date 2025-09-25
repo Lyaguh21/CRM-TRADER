@@ -23,8 +23,8 @@ import { NavLink } from "react-router-dom";
 type data = {
   id: number;
   typeToTrade: string;
-  currency: string;
-  crypto: string;
+  from: string;
+  to: string;
   rate: number;
   count: number;
   total: number;
@@ -81,30 +81,13 @@ export default function ApplicationsTemplate({ el }: { el: data }) {
 
       <Flex justify="space-between" align="center">
         <Flex direction="column" align="center">
-          {data.typeToTrade === "CryptoToCurrency" && (
-            <>
-              <Text fz={22} fw={600}>
-                {data.count}
-                {data.crypto}
-              </Text>
-              <IconArrowDown color="#9CA3AF" />
-              <Text fz={22} fw={600}>
-                {data.total} {data.currency}
-              </Text>
-            </>
-          )}
-
-          {data.typeToTrade === "CurrencyToCrypto" && (
-            <>
-              <Text fz={22} fw={600}>
-                {data.total} {data.currency}
-              </Text>
-              <IconArrowDown color="#9CA3AF" />
-              <Text fz={22} fw={600}>
-                {data.count} {data.crypto}
-              </Text>
-            </>
-          )}
+          <Text fz={22} fw={600}>
+            {data.total} {data.from}
+          </Text>
+          <IconArrowDown color="#9CA3AF" />
+          <Text fz={22} fw={600}>
+            {data.count} {data.to}
+          </Text>
         </Flex>
 
         <Flex direction="column" h="100%" align="stretch">

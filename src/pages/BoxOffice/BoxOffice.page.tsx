@@ -36,7 +36,7 @@ const isEmpty = (obj: object | undefined) => {
 };
 
 export default function BoxOffice() {
-  const { userRole } = useUserStore();
+  const { userRole, userID } = useUserStore();
   const [currency, setCurrency] = useState<Currency>();
   const [change, setChange] = useState(false);
   const [openedPush, { open: openPush, close: closePush }] =
@@ -45,7 +45,7 @@ export default function BoxOffice() {
     useDisclosure(false);
 
   useEffect(() => {
-    axios.get(`${API}/till`).then((res) => {
+    axios.get(`${API}/till?tgId=${userID}`).then((res) => {
       setCurrency(res.data);
     });
   }, [change]);
