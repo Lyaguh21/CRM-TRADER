@@ -1,8 +1,8 @@
 import { Paper, Text, Flex, ActionIcon, Box } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
 import axios from "axios";
-import { API } from "../../../app/helpers";
-import { useUserStore } from "../../../entities/stores/userStore";
+import { API } from "../../../../app/helpers";
+import { useUserStore } from "../../../../entities/stores/userStore";
 
 type typeData = {
   id: number;

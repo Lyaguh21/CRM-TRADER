@@ -177,7 +177,9 @@ export default function ApplicationDetailPage() {
             <Text size="sm" c="dimmed">
               Место встречи
             </Text>
-            <Text fw={600}>{data?.place}</Text>
+            <Text fw={600}>
+              {data?.place === "location_1" ? "Соборный" : data?.place}
+            </Text>
           </Flex>
 
           <Flex justify="space-between" align="center">

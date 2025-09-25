@@ -1,42 +1,24 @@
-//@ts-nocheck
-import { ReactNode, useEffect, useState } from "react";
-import Header from "./components/Header";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { API } from "../../app/helpers";
-import { Currency } from "../../entities/Currency";
+import { API } from "../../../app/helpers";
+import { Currency } from "../../../entities/Currency";
 import { useDisclosure } from "@mantine/hooks";
 import { Paper, Text, Box, Flex, Button } from "@mantine/core";
 import {
+  IconArrowLeft,
   IconCurrencyDollar,
   IconCurrencyEuro,
   IconCurrencyRubel,
   IconMinus,
   IconPlus,
 } from "@tabler/icons-react";
+
+import { Link, useParams } from "react-router-dom";
+import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import ModalPushCurrency from "./components/ModalPushCurrency";
 import ModalPullCurrency from "./components/ModalPullCurrency";
-import { useUserStore } from "../../entities/stores/userStore";
 
-type info = {
-  name: string;
-  count: number;
-  title: string;
-  icon1: ReactNode;
-  icon2: ReactNode;
-  bg: string;
-};
-
-const isEmpty = (obj: object | undefined) => {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      return false;
-    }
-  }
-  return true;
-};
-
-export default function BoxOffice() {
-  const { userRole } = useUserStore();
+export default function AdminTill() {
   const [currency, setCurrency] = useState<Currency>();
   const [change, setChange] = useState(false);
   const [openedPush, { open: openPush, close: closePush }] =
@@ -44,10 +26,12 @@ export default function BoxOffice() {
   const [openedPull, { open: openPull, close: closePull }] =
     useDisclosure(false);
 
+  const { id, name } = useParams();
+
   useEffect(() => {
     axios.get(`${API}/till`).then((res) => {
       setCurrency(res.data);
-    });
+    }); //Добавить получение кассы по оператору
   }, [change]);
 
   const info = [
@@ -96,15 +80,33 @@ export default function BoxOffice() {
         setChange={setChange}
         opened={openedPush}
         close={closePush}
+        id={id}
+        name={name}
       />
       <ModalPullCurrency
         change={change}
         setChange={setChange}
         opened={openedPull}
         close={closePull}
+        id={id}
+        name={name}
       />
 
-      <Header />
+      <Flex
+        w="100%"
+        p={15}
+        align="center"
+        style={{ borderBottom: "2px solid #9CA3AF20" }}
+        gap={15}
+      >
+        <Link to="/admin">
+          <IconArrowLeft size={36} />
+        </Link>
+
+        <Box>
+          <HeadlineText>Учёт кассы {name}</HeadlineText>
+        </Box>
+      </Flex>
 
       <Box p={15}>
         <Paper bg="white" withBorder shadow="xs" p={15}>
@@ -153,55 +155,57 @@ export default function BoxOffice() {
           ))}
         </Paper>
 
-        {userRole === "Admin" && (
-          <Flex w="100%" gap={15} mt={15}>
-            <Button
-              h="auto"
-              radius="lg"
-              bg="#10B981"
-              w={`calc(50% - 5px)`}
-              onClick={openPush}
-            >
-              <Flex align="center" direction="column" gap={10} p={20}>
-                <Flex
-                  justify="center"
-                  align="center"
-                  bdrs={10}
-                  p={10}
-                  bg="white"
-                  style={{ aspectRatio: "1/1" }}
-                  w={66}
-                >
-                  <IconPlus color="#10B981" />
-                </Flex>
-                <Text c="white">Пополнить</Text>
+        <Flex w="100%" gap={15} mt={15}>
+          <Button
+            h="auto"
+            radius="lg"
+            bg="#10B981"
+            w={`calc(50% - 5px)`}
+            onClick={openPush}
+          >
+            <Flex align="center" direction="column" gap={10} p={20}>
+              <Flex
+                justify="center"
+                align="center"
+                bdrs={10}
+                p={10}
+                bg="white"
+                style={{ aspectRatio: "1/1" }}
+                w={66}
+              >
+                <IconPlus color="#10B981" />
               </Flex>
-            </Button>
+              <Text c="white">Пополнить</Text>
+            </Flex>
+          </Button>
 
-            <Button
-              h="auto"
-              radius="lg"
-              bg="#EF4444"
-              w={`calc(50% - 5px)`}
-              onClick={openPull}
-            >
-              <Flex align="center" direction="column" gap={10} p={20}>
-                <Flex
-                  justify="center"
-                  align="center"
-                  bdrs={10}
-                  p={10}
-                  bg="white"
-                  style={{ aspectRatio: "1/1" }}
-                  w={66}
-                >
-                  <IconMinus color="#EF4444" />
-                </Flex>
-                <Text c="white">Вывести</Text>
+          <Button
+            h="auto"
+            radius="lg"
+            bg="#EF4444"
+            w={`calc(50% - 5px)`}
+            onClick={openPull}
+          >
+            <Flex align="center" direction="column" gap={10} p={20}>
+              <Flex
+                justify="center"
+                align="center"
+                bdrs={10}
+                p={10}
+                bg="white"
+                style={{ aspectRatio: "1/1" }}
+                w={66}
+              >
+                <IconMinus color="#EF4444" />
               </Flex>
-            </Button>
-          </Flex>
-        )}
+              <Text c="white">Вывести</Text>
+            </Flex>
+          </Button>
+        </Flex>
+
+        <Button mt={40} fullWidth size="lg" color="yellow">
+          Закрыть смену
+        </Button>
       </Box>
     </>
   );

@@ -6,9 +6,10 @@ import Applications from "../../pages/Applications/Applications.page";
 import BoxOffice from "../../pages/BoxOffice/BoxOffice.page";
 import Reports from "../../pages/Reports/Reports.page";
 
-import AdminPanel from "../../pages/AdminPanel/AdminPanel";
+import AdminPanel from "../../pages/AdminPanel/AdminPanel/AdminPanel";
 import ApplicationDetailPage from "../../pages/Applications/ApplicationDetail.page";
 import CreateApplication from "../../pages/Applications/CreateApplication";
+import AdminTill from "../../pages/AdminPanel/AdminTill/AdminTill";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminPanel />,
+      },
+      {
+        path: "/admin/till/:id/:name",
+        element: <AdminTill />,
       },
     ],
   },

@@ -1,13 +1,15 @@
 import { Box, Flex, Tabs, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import HeadlineText from "../../shared/HeadlineText/HeadlineText";
+import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API } from "../../app/helpers";
-import { useUserStore } from "../../entities/stores/userStore";
+import { API } from "../../../app/helpers";
+
 import TemplateVerification from "./components/TemplateVerification";
 import TemplateEditUserRole from "./components/TemplateEditUserRole";
+import TemplateTillOperators from "./components/TemplateTillOperators";
+import { useUserStore } from "../../../entities/stores/userStore";
 
 type typeData = {
   id: number;
@@ -65,6 +67,9 @@ export default function AdminPanel() {
         <Tabs.Tab value="AccessUser" style={{ flexGrow: 1 }}>
           Верификация
         </Tabs.Tab>
+        <Tabs.Tab value="Till" style={{ flexGrow: 1 }}>
+          Касса
+        </Tabs.Tab>
       </Tabs.List>
       <Box p={15}>
         <Tabs.Panel value="EditRole">
@@ -79,6 +84,7 @@ export default function AdminPanel() {
             ))}
           </Flex>
         </Tabs.Panel>
+
         <Tabs.Panel value="AccessUser">
           <HeadlineText>Верификация пользователей</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
@@ -91,6 +97,21 @@ export default function AdminPanel() {
                 onUpdate={handleUpdate}
               />
             ))}
+          </Flex>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="Till">
+          <HeadlineText>Управление кассой операторов</HeadlineText>
+          <Flex mt={15} direction="column" gap={15}>
+            {dataRole
+              ?.filter((el) => el.role === "Operator")
+              ?.map((el) => (
+                <TemplateTillOperators
+                  key={`role-${el.id}-${refreshCounter}`} // Добавляем счетчик в ключ
+                  el={el}
+                  onUpdate={handleUpdate}
+                />
+              ))}
           </Flex>
         </Tabs.Panel>
       </Box>
