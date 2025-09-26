@@ -1,4 +1,4 @@
-import { Box, em, Flex, Text } from "@mantine/core";
+import { Box, em, Flex, SimpleGrid, Text } from "@mantine/core";
 import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import {
   IconCoins,
@@ -42,117 +42,90 @@ export default function QuickActions() {
       icon: <IconReportAnalytics size={32} />,
       bgc: "-webkit-linear-gradient(353deg, #F59C0B,#EB5D0C)",
     },
-    {
-      link: "/admin",
-      name: "Админ панель",
-      subtitle: "Панель управления для администратора",
-      icon: <IconReportAnalytics size={32} />,
-      bgc: "-webkit-linear-gradient(353deg, #d61e1e,#870f0f)",
-      w: "100%",
-    },
   ];
 
   return (
     <Box px={15}>
       <HeadlineText>Быстрые действия</HeadlineText>
-      <Flex wrap="wrap" mt={15} gap={15}>
-        {userRole !== "Admin" &&
-          data.slice(0, 4).map((el, index) => (
-            <NavLink
-              key={index}
-              to={el.link}
+      <SimpleGrid cols={2} spacing={15} verticalSpacing={15} mb={15}>
+        {data.map((el, index) => (
+          <NavLink key={index} to={el.link}>
+            <Box
+              p={15}
+              w="100%"
+              h="100%"
               style={{
-                width: el.w ? el.w : "calc(50% - 15px)",
-                alignItems: "stretch",
+                background: el.bgc,
+                aspectRatio: "1/1",
+                border: "1px solid #9CA3AF30",
                 borderRadius: 24,
               }}
             >
-              <Box
-                p={15}
-                w="100%"
-                h="100%"
-                style={{
-                  background: el.bgc,
-                  aspectRatio: el.w ? "" : "1/1",
-                  border: "1px solid #9CA3AF30",
-                  borderRadius: 24,
-                }}
-              >
-                <Flex align="center" justify="space-between">
-                  <Flex
-                    bg="#EBF2FE20"
-                    p={5}
-                    c="white"
-                    justify={"center"}
-                    align="center"
-                    bdrs={9}
-                    style={{
-                      aspectRatio: "1/1",
-                    }}
-                  >
-                    {el.icon}
-                  </Flex>
+              <Flex align="center" justify="space-between">
+                <Flex
+                  bg="#EBF2FE20"
+                  p={5}
+                  c="white"
+                  justify={"center"}
+                  align="center"
+                  bdrs={9}
+                  style={{
+                    aspectRatio: "1/1",
+                  }}
+                >
+                  {el.icon}
                 </Flex>
-                <Text my={10} lh={"20px"} fw={550} fz={22} c="white">
-                  {el.name}
+              </Flex>
+              <Text my={10} fw={550} fz={22} c="white">
+                {el.name}
+              </Text>
+              {!mdMobile && (
+                <Text c="#FFFFFF90" fz={16}>
+                  {el.subtitle}
                 </Text>
-                {!mdMobile && (
-                  <Text c="#FFFFFF90" fz={16}>
-                    {el.subtitle}
-                  </Text>
-                )}
-              </Box>
-            </NavLink>
-          ))}
+              )}
+            </Box>
+          </NavLink>
+        ))}
+      </SimpleGrid>
 
-        {userRole === "Admin" &&
-          data.map((el, index) => (
-            <NavLink
-              key={index}
-              to={el.link}
-              style={{
-                width: el.w ? el.w : "calc(50% - 15px)",
-                alignItems: "stretch",
-              }}
-            >
-              <Box
-                p={15}
-                w="100%"
-                h="100%"
+      {userRole === "Admin" && (
+        <NavLink key={9} to="/admin">
+          <Box
+            p={15}
+            w="100%"
+            style={{
+              background: "-webkit-linear-gradient(353deg, #d61e1e,#870f0f)",
+              border: "1px solid #9CA3AF30",
+              borderRadius: 24,
+            }}
+          >
+            <Flex align="center" justify="space-between">
+              <Flex
+                bg="#EBF2FE20"
+                p={5}
+                c="white"
+                justify={"center"}
+                align="center"
+                bdrs={9}
                 style={{
-                  background: el.bgc,
-                  aspectRatio: el.w ? "" : "1/1",
-                  border: "1px solid #9CA3AF30",
-                  borderRadius: 24,
+                  aspectRatio: "1/1",
                 }}
               >
-                <Flex align="center" justify="space-between">
-                  <Flex
-                    bg="#EBF2FE20"
-                    p={5}
-                    c="white"
-                    justify={"center"}
-                    align="center"
-                    bdrs={9}
-                    style={{
-                      aspectRatio: "1/1",
-                    }}
-                  >
-                    {el.icon}
-                  </Flex>
-                </Flex>
-                <Text my={10} fw={550} fz={22} c="white">
-                  {el.name}
-                </Text>
-                {!mdMobile && (
-                  <Text c="#FFFFFF90" fz={16}>
-                    {el.subtitle}
-                  </Text>
-                )}
-              </Box>
-            </NavLink>
-          ))}
-      </Flex>
+                <IconReportAnalytics size={32} />
+              </Flex>
+            </Flex>
+            <Text my={10} fw={550} fz={22} c="white">
+              Админ панель
+            </Text>
+            {!mdMobile && (
+              <Text c="#FFFFFF90" fz={16}>
+                Панель управления для администратора
+              </Text>
+            )}
+          </Box>
+        </NavLink>
+      )}
     </Box>
   );
 }

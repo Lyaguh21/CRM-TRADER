@@ -5,7 +5,7 @@ import axios from "axios";
 import { API } from "../../app/helpers";
 import { Currency } from "../../entities/Currency";
 import { useDisclosure } from "@mantine/hooks";
-import { Paper, Text, Box, Flex, Button } from "@mantine/core";
+import { Paper, Text, Box, Flex, Button, LoadingOverlay } from "@mantine/core";
 import {
   IconCurrencyDollar,
   IconCurrencyEuro,
@@ -36,6 +36,7 @@ const isEmpty = (obj: object | undefined) => {
 };
 
 export default function BoxOffice() {
+  const [loading, setLoading] = useState(false);
   const { userRole, userID } = useUserStore();
   const [currency, setCurrency] = useState<Currency>();
   const [change, setChange] = useState(false);
@@ -45,9 +46,13 @@ export default function BoxOffice() {
     useDisclosure(false);
 
   useEffect(() => {
-    axios.get(`${API}/till?tgId=${userID}`).then((res) => {
-      setCurrency(res.data);
-    });
+    setLoading(true);
+    axios
+      .get(`${API}/till?tgId=${userID}`)
+      .then((res) => {
+        setCurrency(res.data);
+      })
+      .finally(() => setLoading(false));
   }, [change]);
 
   const info = [
@@ -107,7 +112,9 @@ export default function BoxOffice() {
       <Header />
 
       <Box p={15}>
-        <Paper bg="white" withBorder shadow="xs" p={15}>
+        <Paper bg="white" withBorder shadow="xs" p={15} pos="relative">
+          <LoadingOverlay visible={loading} />
+
           <Text my={5} fw={500}>
             Текущие остатки
           </Text>

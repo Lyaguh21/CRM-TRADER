@@ -3,7 +3,7 @@ import axios from "axios";
 import { API } from "../../../app/helpers";
 import { Currency } from "../../../entities/Currency";
 import { useDisclosure } from "@mantine/hooks";
-import { Paper, Text, Box, Flex, Button } from "@mantine/core";
+import { Paper, Text, Box, Flex, Button, LoadingOverlay } from "@mantine/core";
 import {
   IconArrowLeft,
   IconCurrencyDollar,
@@ -18,8 +18,10 @@ import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import ModalPushCurrency from "./components/ModalPushCurrency";
 import ModalPullCurrency from "./components/ModalPullCurrency";
 import { useUserStore } from "../../../entities/stores/userStore";
+import { notifications } from "@mantine/notifications";
 
 export default function AdminTill() {
+  const [loading, setLoading] = useState(false);
   const [currency, setCurrency] = useState<Currency>();
   const [change, setChange] = useState(false);
   const [openedPush, { open: openPush, close: closePush }] =
@@ -31,9 +33,13 @@ export default function AdminTill() {
   const { id, name } = useParams();
 
   useEffect(() => {
-    axios.get(`${API}/till?tgId=${userID}&operId=${id}`).then((res) => {
-      setCurrency(res.data);
-    }); //Добавить получение кассы по оператору
+    setLoading(true);
+    axios
+      .get(`${API}/till?tgId=${userID}&operId=${id}`)
+      .then((res) => {
+        setCurrency(res.data);
+      })
+      .finally(() => setLoading(false));
   }, [change]);
 
   const info = [
@@ -75,6 +81,32 @@ export default function AdminTill() {
     },
   ];
 
+  const endWorkTime = () => {
+    setLoading(true);
+    axios
+      .get(`${API}/till/EndSession?operId=${id}`)
+      .then(() => {
+        notifications.show({
+          title: "Успешно",
+          message: "Сессия была завершена",
+          position: "bottom-center",
+          color: "green",
+          autoClose: 3000,
+        }),
+          setChange(!change);
+      })
+      .catch(() =>
+        notifications.show({
+          title: "Ошибка",
+          message: "Что-то пошло не так",
+          position: "bottom-center",
+          color: "red",
+          autoClose: 3000,
+        })
+      )
+      .finally(() => setLoading(false));
+  };
+
   return (
     <>
       <ModalPushCurrency
@@ -111,7 +143,8 @@ export default function AdminTill() {
       </Flex>
 
       <Box p={15}>
-        <Paper bg="white" withBorder shadow="xs" p={15}>
+        <Paper bg="white" withBorder shadow="xs" p={15} pos="relative">
+          <LoadingOverlay visible={loading} />
           <Text my={5} fw={500}>
             Текущие остатки
           </Text>
@@ -205,7 +238,13 @@ export default function AdminTill() {
           </Button>
         </Flex>
 
-        <Button mt={40} fullWidth size="lg" color="yellow">
+        <Button
+          mt={40}
+          fullWidth
+          size="lg"
+          color="yellow"
+          onClick={endWorkTime}
+        >
           Закрыть смену
         </Button>
       </Box>

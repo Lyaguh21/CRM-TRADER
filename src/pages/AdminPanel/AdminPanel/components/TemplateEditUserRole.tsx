@@ -1,4 +1,12 @@
-import { Paper, Text, Flex, Box, Select, ActionIcon } from "@mantine/core";
+import {
+  Paper,
+  Text,
+  Flex,
+  Box,
+  Select,
+  ActionIcon,
+  LoadingOverlay,
+} from "@mantine/core";
 import axios from "axios";
 import { API } from "../../../../app/helpers";
 import { useUserStore } from "../../../../entities/stores/userStore";
@@ -23,6 +31,7 @@ export default function TemplateEditUserRole({
   onUpdate,
 }: TemplateEditUserRoleProps) {
   const { userID } = useUserStore();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState(el);
   const [role, setRole] = useState<string | null>(el.role);
 
@@ -33,6 +42,7 @@ export default function TemplateEditUserRole({
   }, [el]);
 
   const handleEditRole = (value: string | null) => {
+    setLoading(true);
     setRole(value);
     axios
       .patch(`${API}/auth?tgId=${userID}`, {
@@ -49,12 +59,14 @@ export default function TemplateEditUserRole({
         console.error("Error updating role:", err);
         // В случае ошибки возвращаем предыдущее значение
         setRole(data.role);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <>
-      <Paper w="100%" p={15} shadow="xs" bg="white" bdrs={9}>
+      <Paper w="100%" p={15} shadow="xs" bg="white" bdrs={9} pos="relative">
+        <LoadingOverlay visible={loading} />
         <Flex justify="space-between">
           <Box>
             <Text fz={16}>

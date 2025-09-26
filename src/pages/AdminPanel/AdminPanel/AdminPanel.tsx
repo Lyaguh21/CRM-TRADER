@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Tabs, Text } from "@mantine/core";
+import { Box, Button, Flex, LoadingOverlay, Tabs, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import { Link } from "react-router-dom";
@@ -10,6 +10,7 @@ import TemplateVerification from "./components/TemplateVerification";
 import TemplateEditUserRole from "./components/TemplateEditUserRole";
 import TemplateTillOperators from "./components/TemplateTillOperators";
 import { useUserStore } from "../../../entities/stores/userStore";
+import { notifications } from "@mantine/notifications";
 
 type typeData = {
   id: number;
@@ -19,6 +20,7 @@ type typeData = {
 };
 
 export default function AdminPanel() {
+  const [loadingWorkTime, setLoadingWorkTime] = useState(false);
   const { userID } = useUserStore();
   const [variant, setVariant] = useState<string | null>("EditRole");
   const [edit, setEdit] = useState(false);
@@ -46,6 +48,31 @@ export default function AdminPanel() {
   // Функция для принудительного обновления данных
   const handleUpdate = () => {
     setRefreshCounter((prev) => prev + 1); // Увеличиваем счетчик для принудительного перерендера
+  };
+
+  const endWorkTime = () => {
+    setLoadingWorkTime(true);
+    axios
+      .get(`${API}/till/EndAllSession`)
+      .then(() =>
+        notifications.show({
+          title: "Успешно",
+          message: "Сессии были завершены",
+          position: "bottom-center",
+          color: "green",
+          autoClose: 3000,
+        })
+      )
+      .catch(() =>
+        notifications.show({
+          title: "Ошибка",
+          message: "Что-то пошло не так",
+          position: "bottom-center",
+          color: "red",
+          autoClose: 3000,
+        })
+      )
+      .finally(() => setLoadingWorkTime(false));
   };
 
   return (
@@ -77,7 +104,7 @@ export default function AdminPanel() {
           <Flex mt={15} direction="column" gap={15}>
             {dataRole?.map((el) => (
               <TemplateEditUserRole
-                key={`role-${el.id}-${refreshCounter}`} // Добавляем счетчик в ключ
+                key={`role-${el.id}-${refreshCounter}`}
                 el={el}
                 onUpdate={handleUpdate}
               />
@@ -88,9 +115,12 @@ export default function AdminPanel() {
         <Tabs.Panel value="AccessUser">
           <HeadlineText>Верификация пользователей</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
+            {dataVerified?.length === 0 && (
+              <Text ta="center">Тут пока что пусто</Text>
+            )}
             {dataVerified?.map((el) => (
               <TemplateVerification
-                key={`verified-${el.id}-${refreshCounter}`} // Добавляем счетчик в ключ
+                key={`verified-${el.id}-${refreshCounter}`}
                 edit={edit}
                 setEdit={setEdit}
                 data={el}
@@ -103,9 +133,13 @@ export default function AdminPanel() {
         <Tabs.Panel value="Till">
           <HeadlineText>Управление кассой операторов</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
-            <Button mt={40} fullWidth size="lg" color="yellow">
+            <Button fullWidth size="lg" color="yellow" onClick={endWorkTime}>
               Закрыть все смены
+              <LoadingOverlay visible={loadingWorkTime} />
             </Button>
+            {dataRole?.filter((el) => el.role === "Operator").length === 0 && (
+              <Text ta="center">Тут пока что пусто</Text>
+            )}
             {dataRole
               ?.filter((el) => el.role === "Operator")
               ?.map((el) => (

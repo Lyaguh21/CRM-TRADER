@@ -17,12 +17,14 @@ import {
 import ApplicationsTemplate from "./components/ApplicationTemplate";
 import { IconX } from "@tabler/icons-react";
 import { Status } from "../../entities/Status";
+import { operationType } from "../../entities/OperationFormInfo";
 
 export default function Applications() {
   const { userID } = useUserStore();
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [statusFilter, setStatusFilter] = useState("Все");
+  const [typeFilter, setTypeFilter] = useState("Все");
   const [dateSort, setDateSort] = useState("newest");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,6 +64,10 @@ export default function Applications() {
       result = result.filter((item) => item.status === statusFilter);
     }
 
+    if (typeFilter !== "Все") {
+      result = result.filter((item) => item.typeToTrade === typeFilter);
+    }
+
     // Сортировка по дате
     result.sort((a, b) => {
       const dateA = new Date(a.date || a.createdAt);
@@ -71,12 +77,13 @@ export default function Applications() {
     });
 
     setFilteredData(result);
-  }, [data, statusFilter, dateSort]);
+  }, [data, statusFilter, dateSort, typeFilter]);
 
   // Сброс фильтров
   const resetFilters = () => {
     setStatusFilter("Все");
     setDateSort("newest");
+    setTypeFilter("Все");
   };
 
   if (loading) {
@@ -131,6 +138,20 @@ export default function Applications() {
               data={[
                 { value: "newest", label: "Сначала новые" },
                 { value: "oldest", label: "Сначала старые" },
+              ]}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Select
+              label="Тип"
+              value={typeFilter}
+              onChange={setTypeFilter}
+              data={[
+                { value: "Все", label: "Все" },
+                ...operationType.map((s) => ({
+                  value: s.value,
+                  label: s.label,
+                })),
               ]}
             />
           </Grid.Col>
