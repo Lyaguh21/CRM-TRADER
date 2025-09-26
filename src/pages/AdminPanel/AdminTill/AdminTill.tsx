@@ -31,7 +31,7 @@ export default function AdminTill() {
   const { id, name } = useParams();
 
   useEffect(() => {
-    axios.get(`${API}/till?tgId=${userID}`).then((res) => {
+    axios.get(`${API}/till?tgId=${userID}&operId=${id}`).then((res) => {
       setCurrency(res.data);
     }); //Добавить получение кассы по оператору
   }, [change]);
