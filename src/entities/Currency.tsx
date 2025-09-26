@@ -8,6 +8,6 @@ export type Currency = {
 export const CurrencyArray = [
   { value: "RUB", label: "RUB - Российский рубль" },
   { value: "USD", label: "USD - Доллар США" },
-  { value: "EUR", label: "RUB - Евро" },
+  { value: "EUR", label: "EUR - Евро" },
   { value: "USDT", label: "USDT - Tether" },
 ];

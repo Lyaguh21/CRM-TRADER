@@ -1,4 +1,4 @@
-import { Box, Flex, Tabs, Text } from "@mantine/core";
+import { Box, Button, Flex, Tabs, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import HeadlineText from "../../../shared/HeadlineText/HeadlineText";
 import { Link } from "react-router-dom";
@@ -103,6 +103,9 @@ export default function AdminPanel() {
         <Tabs.Panel value="Till">
           <HeadlineText>Управление кассой операторов</HeadlineText>
           <Flex mt={15} direction="column" gap={15}>
+            <Button mt={40} fullWidth size="lg" color="yellow">
+              Закрыть все смены
+            </Button>
             {dataRole
               ?.filter((el) => el.role === "Operator")
               ?.map((el) => (
